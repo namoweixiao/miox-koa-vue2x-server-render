@@ -43,6 +43,8 @@ const service = new ServerRenderer(app, {
 
 // 桥接程序
 service.connect();
+
+app.listen(3000);
 ```
 
 # 参数说明
