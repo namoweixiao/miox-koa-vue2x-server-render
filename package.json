@@ -1,0 +1,52 @@
+{
+  "name": "miox-koa-vue2x-server-render",
+  "version": "0.0.1",
+  "description": "a middleware for koa which using vue2x in miox",
+  "main": "build/index.js",
+  "author": "evio <evio@vip.qq.com>",
+  "license": "MIT",
+  "scripts": {
+    "build": "rm -rf build/ && babel src -d build"
+  },
+  "files": [
+    "src/",
+    "build/",
+    "package.json",
+    "README.md",
+    ".babelrc"
+  ],
+  "devDependencies": {
+    "autoprefixer": "^6.7.7",
+    "babel-core": "^6.24.0",
+    "babel-helper-vue-jsx-merge-props": "^2.0.2",
+    "babel-loader": "^6.4.1",
+    "babel-plugin-add-module-exports": "^0.2.1",
+    "babel-plugin-syntax-jsx": "^6.18.0",
+    "babel-plugin-transform-class-properties": "^6.23.0",
+    "babel-plugin-transform-decorators-legacy": "^1.3.4",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-plugin-transform-vue-jsx": "^3.4.2",
+    "babel-preset-es2015": "^6.24.0",
+    "babel-preset-stage-0": "^6.22.0",
+    "css-loader": "^0.27.3",
+    "extract-text-webpack-plugin": "^2.1.0",
+    "html-webpack-plugin": "^2.28.0",
+    "koa-convert": "^1.2.0",
+    "koa-static-cache": "^4.0.0",
+    "less": "^2.7.2",
+    "less-loader": "^4.0.2",
+    "lru-cache": "^4.0.2",
+    "memory-fs": "^0.4.1",
+    "node-sass": "^4.5.1",
+    "postcss-loader": "^1.3.3",
+    "sass-loader": "^6.0.3",
+    "style-loader": "^0.15.0",
+    "vue-loader": "^11.2.0",
+    "vue-server-renderer": "^2.2.4",
+    "vue-ssr-webpack-plugin": "^1.0.2",
+    "vue-template-compiler": "^2.2.4",
+    "webpack": "^2.3.0",
+    "webpack-dev-middleware": "^1.10.1",
+    "webpack-hot-middleware": "^2.17.1"
+  }
+}
