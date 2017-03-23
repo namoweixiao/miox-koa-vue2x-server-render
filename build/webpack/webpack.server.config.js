@@ -37,6 +37,22 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 /**
  * Created by evio on 2017/3/17.
  */
+function createLoader(type) {
+    var uses = [{ loader: 'css-loader', options: { minimize: true } }];
+
+    switch (type) {
+        case 'css':
+            break;
+        case 'scss':
+            uses.push('sass-loader');
+            break;
+        default:
+            uses.push(type + '-loader');
+    }
+
+    return _extractTextWebpackPlugin2.default.extract({ fallback: 'style-loader', use: uses });
+}
+
 module.exports = function (options) {
     var PKG = require(_path2.default.resolve(process.cwd(), 'package.json'));
     var PATH_ENTRY_FILE = _path2.default.resolve(process.cwd(), options.entry.dir, options.entry.filename);
@@ -63,12 +79,7 @@ module.exports = function (options) {
                 options: {
                     preserveWhitespace: false,
                     postcss: [(0, _autoprefixer2.default)({ browsers: ['last 20 versions'] })],
-                    loaders: {
-                        css: _extractTextWebpackPlugin2.default.extract({ fallback: 'style-loader', use: 'css-loader' }),
-                        less: _extractTextWebpackPlugin2.default.extract({ fallback: 'postcss-loader', use: 'less-loader' }),
-                        scss: _extractTextWebpackPlugin2.default.extract({ fallback: 'postcss-loader', use: 'sass-loader' }),
-                        sass: _extractTextWebpackPlugin2.default.extract({ fallback: 'postcss-loader', use: 'sass-loader' })
-                    }
+                    loaders: { css: createLoader('css'), less: createLoader('less'), scss: createLoader('scss') }
                 }
             }, {
                 test: /\.js$/,
@@ -78,7 +89,16 @@ module.exports = function (options) {
                 test: /\.jsx$/,
                 use: { loader: 'babel-loader' },
                 include: INCLUDE_REGEXP
-            }, { test: /\.css$/, loader: _extractTextWebpackPlugin2.default.extract({ fallback: 'style-loader', use: 'css-loader' }) }, { test: /\.less$/, loader: _extractTextWebpackPlugin2.default.extract({ fallback: 'postcss-loader', use: 'less-loader' }) }, { test: /\.scss$/, loader: _extractTextWebpackPlugin2.default.extract({ fallback: 'postcss-loader', use: 'sass-loader' }) }]
+            }, {
+                test: /\.css$/,
+                loader: createLoader('css')
+            }, {
+                test: /\.less$/,
+                loader: createLoader('less')
+            }, {
+                test: /\.scss$/,
+                loader: createLoader('scss')
+            }]
         },
         plugins: [new _webpack2.default.DefinePlugin({
             'process.env.NODE_ENV': (0, _stringify2.default)(process.env.NODE_ENV || 'development'),

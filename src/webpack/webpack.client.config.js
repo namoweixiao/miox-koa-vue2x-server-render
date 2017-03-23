@@ -8,6 +8,22 @@ import AutoPrefixer from 'autoprefixer';
 import ExtractTextPlugin from 'extract-text-webpack-plugin';
 import source_modules from './source.modules';
 
+function createLoader(type) {
+    const uses = [{ loader: `css-loader`, options: { minimize: true }}];
+
+    switch (type) {
+        case 'css':
+            break;
+        case 'scss':
+            uses.push(`sass-loader`);
+            break;
+        default:
+            uses.push(`${type}-loader`);
+    }
+
+    return ExtractTextPlugin.extract({ fallback: 'style-loader', use: uses });
+}
+
 export default function Client(options) {
     const PATH_BUILD_PREFIX = path.resolve(process.cwd(), options.buildPrefix);
     const PATH_ENTRY_FILE = path.resolve(process.cwd(), options.entry.dir, options.entry.filename);
@@ -33,15 +49,8 @@ export default function Client(options) {
                     include: INCLUDE_REGEXP,
                     options: {
                         preserveWhitespace: false,
-                        postcss: [
-                            AutoPrefixer({browsers: ['last 20 versions']})
-                        ],
-                        loaders: {
-                            css: ExtractTextPlugin.extract({ fallback: 'style-loader', use: 'css-loader' }),
-                            less: ExtractTextPlugin.extract({ fallback: 'postcss-loader', use: 'less-loader' }),
-                            scss: ExtractTextPlugin.extract({ fallback: 'postcss-loader', use: 'sass-loader' }),
-                            sass: ExtractTextPlugin.extract({ fallback: 'postcss-loader', use: 'sass-loader' })
-                        }
+                        postcss: [ AutoPrefixer({browsers: ['last 20 versions']}) ],
+                        loaders: { css: createLoader('css'),  less: createLoader('less'),  scss: createLoader('scss') }
                     }
                 },
                 {
@@ -54,9 +63,18 @@ export default function Client(options) {
                     use: { loader: 'babel-loader', },
                     include: INCLUDE_REGEXP
                 },
-                { test: /\.css$/, loader: ExtractTextPlugin.extract({ fallback: 'style-loader', use: 'css-loader' }) },
-                { test: /\.less$/, loader: ExtractTextPlugin.extract({ fallback: 'postcss-loader', use: 'less-loader' }) },
-                { test: /\.scss$/, loader: ExtractTextPlugin.extract({ fallback: 'postcss-loader', use: 'sass-loader' }) }
+                {
+                    test: /\.css$/,
+                    loader: createLoader('css')
+                },
+                {
+                    test: /\.less$/,
+                    loader: createLoader('less')
+                },
+                {
+                    test: /\.scss$/,
+                    loader: createLoader('scss')
+                }
             ]
         },
         plugins: [
@@ -65,7 +83,7 @@ export default function Client(options) {
                 'process.env.MIOX_ENV': '"client"'
             }),
             new webpack.optimize.CommonsChunkPlugin({ name: 'vendor' }),
-            new HtmlWebpackPlugin({ template: 'src/index.html' }),
+            new HtmlWebpackPlugin({ template: `${options.entry.dir}/index.html` }),
             new ExtractTextPlugin('style.[hash].css')
         ]
     }
