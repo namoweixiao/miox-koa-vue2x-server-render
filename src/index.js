@@ -10,7 +10,6 @@ import ctk from 'koa-connect';
 import MFS from 'memory-fs';
 import Convert from 'koa-convert';
 import staticCache from 'koa-static-cache';
-import VueServerRenderer from 'vue-server-renderer';
 import clientConfig from './webpack/webpack.client.config';
 import serverConfig from './webpack/webpack.server.config';
 import webpackDevMiddleWare from 'webpack-dev-middleware';
@@ -85,7 +84,7 @@ export default class MioxKoaVue2xServerRender {
             `<div class="mx-app"><div class="mx-webviews"><div class="mx-webview"><!--vue-ssr-outlet--></div></div></div>`
         );
 
-        return VueServerRenderer.createBundleRenderer(bundle, {
+        return require('vue-server-renderer').createBundleRenderer(bundle, {
             template,
             cache: LruCache(this.options.lru || {
                 max: 1000,
@@ -106,7 +105,7 @@ export default class MioxKoaVue2xServerRender {
         return stream;
     }
 
-    onRenderError(resolve) {
+    onRenderError(ctx, resolve) {
         return err => {
             if (!this.productionEnv) {
                 console.error(`error during render : ${ctx.request.url}`)
@@ -128,14 +127,18 @@ export default class MioxKoaVue2xServerRender {
     }
 
     CREATE_SERVER_PROCESS() {
-        this.app.use(async ctx => {
+        this.app.use(async (ctx, next) => {
             ctx.status = 404;
 
             const body = await new Promise(resolve => {
                 const object = { url: ctx.request.url, app: this.app, ctx };
                 const res = this.response(resolve);
-                this.renderer.renderToStream(object).on('error', this.onRenderError(resolve)).pipe(res);
+                this.renderer.renderToStream(object).on('error', this.onRenderError(ctx, resolve)).pipe(res);
             });
+
+            if (body.code ===404) {
+                return await next();
+            }
 
             if (body instanceof Error || body.code) {
                 this.cast(ctx, `${body.code || 500} | ${body.message}`, body.code || 500);

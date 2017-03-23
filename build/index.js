@@ -69,10 +69,6 @@ var _koaStaticCache = require('koa-static-cache');
 
 var _koaStaticCache2 = _interopRequireDefault(_koaStaticCache);
 
-var _vueServerRenderer = require('vue-server-renderer');
-
-var _vueServerRenderer2 = _interopRequireDefault(_vueServerRenderer);
-
 var _webpackClient = require('./webpack/webpack.client.config');
 
 var _webpackClient2 = _interopRequireDefault(_webpackClient);
@@ -91,9 +87,6 @@ var _webpackHotMiddleware2 = _interopRequireDefault(_webpackHotMiddleware);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-/**
- * Created by evio on 2017/3/22.
- */
 var MioxKoaVue2xServerRender = function () {
     /**
      * 配置
@@ -214,7 +207,7 @@ var MioxKoaVue2xServerRender = function () {
         value: function createRenderer(bundle, template) {
             template = template.replace('<!--vue-ssr-outlet-->', '<div class="mx-app"><div class="mx-webviews"><div class="mx-webview"><!--vue-ssr-outlet--></div></div></div>');
 
-            return _vueServerRenderer2.default.createBundleRenderer(bundle, {
+            return require('vue-server-renderer').createBundleRenderer(bundle, {
                 template: template,
                 cache: (0, _lruCache2.default)(this.options.lru || {
                     max: 1000,
@@ -239,7 +232,7 @@ var MioxKoaVue2xServerRender = function () {
         }
     }, {
         key: 'onRenderError',
-        value: function onRenderError(resolve) {
+        value: function onRenderError(ctx, resolve) {
             var _this3 = this;
 
             return function (err) {
@@ -268,7 +261,7 @@ var MioxKoaVue2xServerRender = function () {
             var _this4 = this;
 
             this.app.use(function () {
-                var _ref3 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee3(ctx) {
+                var _ref3 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee3(ctx, next) {
                     var body;
                     return _regenerator2.default.wrap(function _callee3$(_context3) {
                         while (1) {
@@ -280,12 +273,24 @@ var MioxKoaVue2xServerRender = function () {
                                     return new _promise2.default(function (resolve) {
                                         var object = { url: ctx.request.url, app: _this4.app, ctx: ctx };
                                         var res = _this4.response(resolve);
-                                        _this4.renderer.renderToStream(object).on('error', _this4.onRenderError(resolve)).pipe(res);
+                                        _this4.renderer.renderToStream(object).on('error', _this4.onRenderError(ctx, resolve)).pipe(res);
                                     });
 
                                 case 3:
                                     body = _context3.sent;
 
+                                    if (!(body.code === 404)) {
+                                        _context3.next = 8;
+                                        break;
+                                    }
+
+                                    _context3.next = 7;
+                                    return next();
+
+                                case 7:
+                                    return _context3.abrupt('return', _context3.sent);
+
+                                case 8:
 
                                     if (body instanceof Error || body.code) {
                                         _this4.cast(ctx, (body.code || 500) + ' | ' + body.message, body.code || 500);
@@ -293,7 +298,7 @@ var MioxKoaVue2xServerRender = function () {
                                         _this4.cast(ctx, body);
                                     }
 
-                                case 5:
+                                case 9:
                                 case 'end':
                                     return _context3.stop();
                             }
@@ -301,7 +306,7 @@ var MioxKoaVue2xServerRender = function () {
                     }, _callee3, _this4);
                 }));
 
-                return function (_x6) {
+                return function (_x6, _x7) {
                     return _ref3.apply(this, arguments);
                 };
             }());
@@ -402,7 +407,10 @@ var MioxKoaVue2xServerRender = function () {
         }
     }]);
     return MioxKoaVue2xServerRender;
-}();
+}(); /**
+      * Created by evio on 2017/3/22.
+      */
+
 
 exports.default = MioxKoaVue2xServerRender;
 module.exports = exports['default'];

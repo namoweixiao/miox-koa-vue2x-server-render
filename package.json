@@ -1,12 +1,13 @@
 {
   "name": "miox-koa-vue2x-server-render",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "a middleware for koa which using vue2x in miox",
   "main": "build/index.js",
   "author": "evio <evio@vip.qq.com>",
   "license": "MIT",
   "scripts": {
-    "build": "rm -rf build/ && babel src -d build"
+    "build": "rm -rf build/ && babel src -d build",
+    "git": "npm run build && git add . && git commit -am 'update' && git push"
   },
   "files": [
     "src/",
@@ -31,6 +32,7 @@
     "css-loader": "^0.27.3",
     "extract-text-webpack-plugin": "^2.1.0",
     "html-webpack-plugin": "^2.28.0",
+    "koa-connect": "^2.0.0",
     "koa-convert": "^1.2.0",
     "koa-static-cache": "^4.0.0",
     "less": "^2.7.2",
