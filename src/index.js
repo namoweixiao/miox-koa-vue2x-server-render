@@ -156,7 +156,7 @@ export default class MioxKoaVue2xServerRender {
     }
 
     RUN_IN_PRODUCTION_STATIC(PATH_BUILD_PREFIX) {
-        const { maxAge, gzip, dynamic, ...args } = this.options.static;
+        const { maxAge, gzip, dynamic, ...args } = this.options.static || {};
         this.app.use(Convert(staticCache(PATH_BUILD_PREFIX, {
             "prefix": `/${this.options.buildPrefix}`,
             "maxAge": maxAge === undefined ? 31536000 : maxAge,

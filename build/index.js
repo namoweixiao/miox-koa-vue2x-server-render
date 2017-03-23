@@ -322,11 +322,11 @@ var MioxKoaVue2xServerRender = function () {
     }, {
         key: 'RUN_IN_PRODUCTION_STATIC',
         value: function RUN_IN_PRODUCTION_STATIC(PATH_BUILD_PREFIX) {
-            var _options$static = this.options.static,
-                maxAge = _options$static.maxAge,
-                gzip = _options$static.gzip,
-                dynamic = _options$static.dynamic,
-                args = (0, _objectWithoutProperties3.default)(_options$static, ['maxAge', 'gzip', 'dynamic']);
+            var _ref4 = this.options.static || {},
+                maxAge = _ref4.maxAge,
+                gzip = _ref4.gzip,
+                dynamic = _ref4.dynamic,
+                args = (0, _objectWithoutProperties3.default)(_ref4, ['maxAge', 'gzip', 'dynamic']);
 
             this.app.use((0, _koaConvert2.default)((0, _koaStaticCache2.default)(PATH_BUILD_PREFIX, (0, _extends3.default)({
                 "prefix": '/' + this.options.buildPrefix,
