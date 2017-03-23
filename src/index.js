@@ -28,6 +28,7 @@ export default class MioxKoaVue2xServerRender {
      *  - static: <Object> 静态资源配置`koa-static-cache`
      *  - clientCallback: <Function> 修改Client端配置
      *  - serverCallback: <Function> 修改Server端配置
+     *  - externals: <Array> 排出掉的externals配置
      */
     constructor(app, options = {}) {
         this.renderer = null;
@@ -112,11 +113,7 @@ export default class MioxKoaVue2xServerRender {
                 console.error(err)
             }
 
-            if (err && err.code === 404) {
-                resolve(err);
-            } else {
-                resolve(err);
-            }
+            resolve(err);
         }
     }
 

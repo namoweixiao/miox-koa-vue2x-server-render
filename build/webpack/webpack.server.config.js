@@ -58,11 +58,23 @@ module.exports = function (options) {
     var PATH_ENTRY_FILE = _path2.default.resolve(process.cwd(), options.entry.dir, options.entry.filename);
     var PATH_BUILD_PREFIX = _path2.default.resolve(process.cwd(), options.buildPrefix);
     var INCLUDE_REGEXP = (0, _source2.default)(options);
+    var dependencies = (0, _keys2.default)(PKG.dependencies);
+    var externals = options.externals || [];
+    if (externals.indexOf('normalize.css') === -1) {
+        externals.push('normalize.css');
+    }
+    var i = externals.length;
+    while (i--) {
+        var index = dependencies.indexOf(externals[i]);
+        if (index > -1) {
+            dependencies.splice(index, 1);
+        }
+    }
 
     return {
         target: 'node',
         devtool: "#inline-source-map",
-        externals: (0, _keys2.default)(PKG.dependencies),
+        externals: dependencies,
         entry: PATH_ENTRY_FILE,
         output: {
             path: PATH_BUILD_PREFIX,

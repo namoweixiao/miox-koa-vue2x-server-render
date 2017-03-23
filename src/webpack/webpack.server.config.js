@@ -29,11 +29,23 @@ module.exports = options => {
     const PATH_ENTRY_FILE = path.resolve(process.cwd(), options.entry.dir, options.entry.filename);
     const PATH_BUILD_PREFIX = path.resolve(process.cwd(), options.buildPrefix);
     const INCLUDE_REGEXP = source_modules(options);
+    const dependencies = Object.keys(PKG.dependencies);
+    const externals = options.externals || [];
+    if (externals.indexOf('normalize.css') === -1) {
+        externals.push('normalize.css');
+    }
+    let i = externals.length;
+    while (i--) {
+        const index = dependencies.indexOf(externals[i]);
+        if (index > -1) {
+            dependencies.splice(index, 1);
+        }
+    }
 
     return {
         target: 'node',
         devtool: "#inline-source-map",
-        externals: Object.keys(PKG.dependencies),
+        externals: dependencies,
         entry: PATH_ENTRY_FILE,
         output: {
             path: PATH_BUILD_PREFIX,
