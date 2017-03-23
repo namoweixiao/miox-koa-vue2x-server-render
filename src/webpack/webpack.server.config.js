@@ -3,6 +3,7 @@
  */
 import path from 'path';
 import webpack from 'webpack';
+import unique from 'array-unique';
 import source_modules from './source.modules';
 import AutoPrefixer from 'autoprefixer';
 import VueSSRPlugin from 'vue-ssr-webpack-plugin';
@@ -30,10 +31,9 @@ module.exports = options => {
     const PATH_BUILD_PREFIX = path.resolve(process.cwd(), options.buildPrefix);
     const INCLUDE_REGEXP = source_modules(options);
     const dependencies = Object.keys(PKG.dependencies);
-    const externals = options.externals || [];
-    if (externals.indexOf('normalize.css') === -1) {
-        externals.push('normalize.css');
-    }
+    let externals = options.externals || [];
+    externals.push('normalize.css', 'miox-simple', 'miox-core');
+    externals = unique(externals);
     let i = externals.length;
     while (i--) {
         const index = dependencies.indexOf(externals[i]);

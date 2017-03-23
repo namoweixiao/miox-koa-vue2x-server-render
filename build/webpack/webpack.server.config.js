@@ -16,6 +16,10 @@ var _webpack = require('webpack');
 
 var _webpack2 = _interopRequireDefault(_webpack);
 
+var _arrayUnique = require('array-unique');
+
+var _arrayUnique2 = _interopRequireDefault(_arrayUnique);
+
 var _source = require('./source.modules');
 
 var _source2 = _interopRequireDefault(_source);
@@ -34,9 +38,6 @@ var _extractTextWebpackPlugin2 = _interopRequireDefault(_extractTextWebpackPlugi
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-/**
- * Created by evio on 2017/3/17.
- */
 function createLoader(type) {
     var uses = [{ loader: 'css-loader', options: { minimize: true } }];
 
@@ -51,7 +52,10 @@ function createLoader(type) {
     }
 
     return _extractTextWebpackPlugin2.default.extract({ fallback: 'style-loader', use: uses });
-}
+} /**
+   * Created by evio on 2017/3/17.
+   */
+
 
 module.exports = function (options) {
     var PKG = require(_path2.default.resolve(process.cwd(), 'package.json'));
@@ -60,9 +64,8 @@ module.exports = function (options) {
     var INCLUDE_REGEXP = (0, _source2.default)(options);
     var dependencies = (0, _keys2.default)(PKG.dependencies);
     var externals = options.externals || [];
-    if (externals.indexOf('normalize.css') === -1) {
-        externals.push('normalize.css');
-    }
+    externals.push('normalize.css', 'miox-simple', 'miox-core');
+    externals = (0, _arrayUnique2.default)(externals);
     var i = externals.length;
     while (i--) {
         var index = dependencies.indexOf(externals[i]);
