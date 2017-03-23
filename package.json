@@ -1,6 +1,6 @@
 {
   "name": "miox-koa-vue2x-server-render",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "a middleware for koa which using vue2x in miox",
   "main": "build/index.js",
   "author": "evio <evio@vip.qq.com>",
@@ -15,7 +15,7 @@
     "README.md",
     ".babelrc"
   ],
-  "devDependencies": {
+  "dependencies": {
     "autoprefixer": "^6.7.7",
     "babel-core": "^6.24.0",
     "babel-helper-vue-jsx-merge-props": "^2.0.2",
