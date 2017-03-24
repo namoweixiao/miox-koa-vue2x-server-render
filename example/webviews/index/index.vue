@@ -11,6 +11,7 @@
     export default class Page extends Webview {
         @life mounted() {
             alert(this.$store.state.me);
+            console.log('test')
         }
     }
 </script>

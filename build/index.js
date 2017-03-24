@@ -273,12 +273,6 @@ var MioxKoaVue2xServerRender = function () {
                                     return new _promise2.default(function (resolve) {
                                         var object = { url: ctx.request.url, app: _this4.app, ctx: ctx };
                                         var res = _this4.response(resolve);
-                                        if (_this4.options.prefix) {
-                                            object.url = object.url.replace(new RegExp('^' + _this4.options.prefix.replace(/\//g, '\\/')), '');
-                                            if (!/^\//.test(object.url)) {
-                                                object.url = '/' + object.url;
-                                            }
-                                        }
                                         _this4.renderer.renderToStream(object).on('error', _this4.onRenderError(ctx, resolve)).pipe(res);
                                     });
 

@@ -133,12 +133,6 @@ export default class MioxKoaVue2xServerRender {
             const body = await new Promise(resolve => {
                 const object = { url: ctx.request.url, app: this.app, ctx };
                 const res = this.response(resolve);
-                if (this.options.prefix) {
-                    object.url = object.url.replace(new RegExp(`^${this.options.prefix.replace(/\//g, '\\/')}`), '');
-                    if (!/^\//.test(object.url)) {
-                        object.url = `/${object.url}`;
-                    }
-                }
                 this.renderer.renderToStream(object).on('error', this.onRenderError(ctx, resolve)).pipe(res);
             });
 
