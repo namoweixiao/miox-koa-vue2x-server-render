@@ -6,8 +6,13 @@
   "author": "evio <evio@vip.qq.com>",
   "license": "MIT",
   "scripts": {
+    "git": "npm run build && git add . && git commit -am 'update' && git push",
+    "dev": "NODE_ENV=dev MIOX_ENV=server babel-node demo/index.js",
+    "start": "NODE_ENV=production babel-node demo/index.js",
     "build": "rm -rf build/ && babel src -d build",
-    "git": "npm run build && git add . && git commit -am 'update' && git push"
+    "build:service": "rimraf dist && npm run build:client && npm run build:server",
+    "build:client": "NODE_ENV=production MIOX_ENV=client webpack --config demo/build.client.js --progress --hide-modules",
+    "build:server": "NODE_ENV=production MIOX_ENV=server webpack --config demo/build.server.js --progress --hide-modules"
   },
   "files": [
     "src/",
@@ -47,9 +52,16 @@
     "vue-loader": "^11.2.0",
     "vue-server-renderer": "^2.2.4",
     "vue-ssr-webpack-plugin": "^1.0.2",
-    "vue-template-compiler": "^2.2.4",
+    "vue-template-compiler": "^2.2.5",
     "webpack": "^2.3.0",
     "webpack-dev-middleware": "^1.10.1",
     "webpack-hot-middleware": "^2.17.1"
+  },
+  "devDependencies": {
+    "koa": "^2.0.0-alpha.8",
+    "koa-router": "^7.0.1",
+    "miox-router": "^0.1.2",
+    "miox-simple": "^3.0.2",
+    "miox-vue2x": "^2.0.0"
   }
 }

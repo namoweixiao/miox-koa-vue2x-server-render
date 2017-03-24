@@ -56,7 +56,7 @@ function createLoader(type) {
 }
 
 function Client(options) {
-    var PATH_BUILD_PREFIX = _path2.default.resolve(process.cwd(), options.buildPrefix);
+    var PATH_BUILD_PREFIX = _path2.default.resolve(process.cwd(), options.build);
     var PATH_ENTRY_FILE = _path2.default.resolve(process.cwd(), options.entry.dir, options.entry.filename);
     var INCLUDE_REGEXP = (0, _source2.default)(options);
 
@@ -68,8 +68,8 @@ function Client(options) {
         },
         output: {
             path: PATH_BUILD_PREFIX,
-            publicPath: _path2.default.normalize('/' + _path2.default.normalize(options.buildPrefix).replace(/\/$/, '') + '/'),
-            filename: '[name].[hash].client.js'
+            publicPath: options.prefix ? options.prefix + '/' + options.build : '/' + options.build,
+            filename: 'client.[name].[hash].js'
         },
         module: {
             noParse: /es6-promise\.js$/,
@@ -114,7 +114,8 @@ function Client(options) {
             }
         }));
     } else {
-        config.entry.app.unshift('webpack-hot-middleware/client');
+        var pahter = options.prefix ? options.prefix + '/__webpack_hmr' : '/__webpack_hmr';
+        config.entry.app.unshift('webpack-hot-middleware/client?path=' + pahter);
     }
 
     return config;

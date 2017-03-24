@@ -60,11 +60,11 @@ function createLoader(type) {
 module.exports = function (options) {
     var PKG = require(_path2.default.resolve(process.cwd(), 'package.json'));
     var PATH_ENTRY_FILE = _path2.default.resolve(process.cwd(), options.entry.dir, options.entry.filename);
-    var PATH_BUILD_PREFIX = _path2.default.resolve(process.cwd(), options.buildPrefix);
+    var PATH_BUILD_PREFIX = _path2.default.resolve(process.cwd(), options.build);
     var INCLUDE_REGEXP = (0, _source2.default)(options);
     var dependencies = (0, _keys2.default)(PKG.dependencies);
     var externals = options.externals || [];
-    externals.push('normalize.css', 'miox-simple', 'miox-core');
+    externals.push('normalize.css', 'miox-simple', 'miox-core', 'miox-router', 'vuex', 'vue', 'miox-vue2x');
     externals = (0, _arrayUnique2.default)(externals);
     var i = externals.length;
     while (i--) {
@@ -81,7 +81,7 @@ module.exports = function (options) {
         entry: PATH_ENTRY_FILE,
         output: {
             path: PATH_BUILD_PREFIX,
-            publicPath: _path2.default.normalize('/' + _path2.default.normalize(options.buildPrefix).replace(/\/$/, '') + '/'),
+            publicPath: options.prefix ? options.prefix + '/' + options.build : '/' + options.build,
             filename: 'server-bundle.js',
             libraryTarget: 'commonjs2'
         },
