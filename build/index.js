@@ -25,6 +25,10 @@ var _asyncToGenerator2 = require('babel-runtime/helpers/asyncToGenerator');
 
 var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
 
+var _getPrototypeOf = require('babel-runtime/core-js/object/get-prototype-of');
+
+var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
 var _classCallCheck2 = require('babel-runtime/helpers/classCallCheck');
 
 var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
@@ -32,6 +36,14 @@ var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
 var _createClass2 = require('babel-runtime/helpers/createClass');
 
 var _createClass3 = _interopRequireDefault(_createClass2);
+
+var _possibleConstructorReturn2 = require('babel-runtime/helpers/possibleConstructorReturn');
+
+var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+var _inherits2 = require('babel-runtime/helpers/inherits');
+
+var _inherits3 = _interopRequireDefault(_inherits2);
 
 var _path = require('path');
 
@@ -85,9 +97,16 @@ var _webpackHotMiddleware = require('webpack-hot-middleware');
 
 var _webpackHotMiddleware2 = _interopRequireDefault(_webpackHotMiddleware);
 
+var _events = require('events');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var MioxKoaVue2xServerRender = function () {
+/**
+ * Created by evio on 2017/3/22.
+ */
+var MioxKoaVue2xServerRender = function (_EventEmitter) {
+    (0, _inherits3.default)(MioxKoaVue2xServerRender, _EventEmitter);
+
     /**
      * 配置
      * @param app
@@ -109,20 +128,23 @@ var MioxKoaVue2xServerRender = function () {
         var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
         (0, _classCallCheck3.default)(this, MioxKoaVue2xServerRender);
 
-        this.renderer = null;
-        this.productionEnv = process.env.NODE_ENV === 'production';
-        this.app = app;
-        this.options = options;
-        this.clientConfig = (0, _webpackClient2.default)(this.options);
-        this.serverConfig = (0, _webpackServer2.default)(this.options);
+        var _this = (0, _possibleConstructorReturn3.default)(this, (MioxKoaVue2xServerRender.__proto__ || (0, _getPrototypeOf2.default)(MioxKoaVue2xServerRender)).call(this));
 
-        if (typeof this.options.clientCallback === 'function') {
-            this.clientConfig = this.options.clientCallback(this.clientConfig);
+        _this.renderer = null;
+        _this.productionEnv = process.env.NODE_ENV === 'production';
+        _this.app = app;
+        _this.options = options;
+        _this.clientConfig = (0, _webpackClient2.default)(_this.options);
+        _this.serverConfig = (0, _webpackServer2.default)(_this.options);
+
+        if (typeof _this.options.clientCallback === 'function') {
+            _this.clientConfig = _this.options.clientCallback(_this.clientConfig);
         }
 
-        if (typeof this.options.serverCallback === 'function') {
-            this.serverConfig = this.options.serverCallback(this.serverConfig);
+        if (typeof _this.options.serverCallback === 'function') {
+            _this.serverConfig = _this.options.serverCallback(_this.serverConfig);
         }
+        return _this;
     }
 
     (0, _createClass3.default)(MioxKoaVue2xServerRender, [{
@@ -142,7 +164,7 @@ var MioxKoaVue2xServerRender = function () {
     }, {
         key: 'beforeRendererCreated',
         value: function beforeRendererCreated() {
-            var _this = this;
+            var _this2 = this;
 
             this.app.use(function () {
                 var _ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee(ctx, next) {
@@ -150,7 +172,7 @@ var MioxKoaVue2xServerRender = function () {
                         while (1) {
                             switch (_context.prev = _context.next) {
                                 case 0:
-                                    if (_this.renderer) {
+                                    if (_this2.renderer) {
                                         _context.next = 4;
                                         break;
                                     }
@@ -168,7 +190,7 @@ var MioxKoaVue2xServerRender = function () {
                                     return _context.stop();
                             }
                         }
-                    }, _callee, _this);
+                    }, _callee, _this2);
                 }));
 
                 return function (_x2, _x3) {
@@ -179,7 +201,7 @@ var MioxKoaVue2xServerRender = function () {
     }, {
         key: 'init',
         value: function init() {
-            var _this2 = this;
+            var _this3 = this;
 
             this.app.use(function () {
                 var _ref2 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee2(ctx, next) {
@@ -187,7 +209,7 @@ var MioxKoaVue2xServerRender = function () {
                         while (1) {
                             switch (_context2.prev = _context2.next) {
                                 case 0:
-                                    if (!_this2.productionEnv) {
+                                    if (!_this3.productionEnv) {
                                         ctx.status = 200;
                                     }
                                     _context2.next = 3;
@@ -198,7 +220,7 @@ var MioxKoaVue2xServerRender = function () {
                                     return _context2.stop();
                             }
                         }
-                    }, _callee2, _this2);
+                    }, _callee2, _this3);
                 }));
 
                 return function (_x4, _x5) {
@@ -237,10 +259,10 @@ var MioxKoaVue2xServerRender = function () {
     }, {
         key: 'onRenderError',
         value: function onRenderError(ctx, resolve) {
-            var _this3 = this;
+            var _this4 = this;
 
             return function (err) {
-                if (!_this3.productionEnv) {
+                if (!_this4.productionEnv) {
                     console.error('error during render : ' + ctx.request.url);
                     console.error(err);
                 }
@@ -258,7 +280,7 @@ var MioxKoaVue2xServerRender = function () {
     }, {
         key: 'CREATE_SERVER_PROCESS',
         value: function CREATE_SERVER_PROCESS() {
-            var _this4 = this;
+            var _this5 = this;
 
             this.app.use(function () {
                 var _ref3 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee3(ctx, next) {
@@ -271,9 +293,9 @@ var MioxKoaVue2xServerRender = function () {
 
                                     _context3.next = 3;
                                     return new _promise2.default(function (resolve) {
-                                        var object = { url: ctx.request.url, app: _this4.app, ctx: ctx };
-                                        var res = _this4.response(resolve);
-                                        _this4.renderer.renderToStream(object).on('error', _this4.onRenderError(ctx, resolve)).pipe(res);
+                                        var object = { url: ctx.request.url, app: _this5.app, ctx: ctx };
+                                        var res = _this5.response(resolve);
+                                        _this5.renderer.renderToStream(object).on('error', _this5.onRenderError(ctx, resolve)).pipe(res);
                                     });
 
                                 case 3:
@@ -293,9 +315,9 @@ var MioxKoaVue2xServerRender = function () {
                                 case 8:
 
                                     if (body instanceof Error || body.code) {
-                                        _this4.cast(ctx, (body.code || 500) + ' | ' + body.message, body.code || 500);
+                                        _this5.cast(ctx, (body.code || 500) + ' | ' + body.message, body.code || 500);
                                     } else {
-                                        _this4.cast(ctx, body);
+                                        _this5.cast(ctx, body);
                                     }
 
                                 case 9:
@@ -303,7 +325,7 @@ var MioxKoaVue2xServerRender = function () {
                                     return _context3.stop();
                             }
                         }
-                    }, _callee3, _this4);
+                    }, _callee3, _this5);
                 }));
 
                 return function (_x6, _x7) {
@@ -331,6 +353,7 @@ var MioxKoaVue2xServerRender = function () {
                 dynamic = _ref4.dynamic,
                 args = (0, _objectWithoutProperties3.default)(_ref4, ['maxAge', 'gzip', 'dynamic']);
 
+            this.emit('beforeStatic');
             this.app.use((0, _koaConvert2.default)((0, _koaStaticCache2.default)(PATH_BUILD_PREFIX, (0, _extends3.default)({
                 "prefix": this.options.prefix ? this.options.prefix + '/' + this.options.build : '/' + this.options.build,
                 "maxAge": maxAge === undefined ? 31536000 : maxAge,
@@ -341,16 +364,16 @@ var MioxKoaVue2xServerRender = function () {
     }, {
         key: 'RUN_IN_DEVELOPMENT',
         value: function RUN_IN_DEVELOPMENT() {
-            var _this5 = this;
+            var _this6 = this;
 
             this.SETUP_DEV_SERVER(function (bundle, template) {
-                _this5.renderer = _this5.createRenderer(bundle, template);
+                _this6.renderer = _this6.createRenderer(bundle, template);
             });
         }
     }, {
         key: 'SETUP_DEV_SERVER',
         value: function SETUP_DEV_SERVER(cb) {
-            var _this6 = this;
+            var _this7 = this;
 
             var bundle = void 0;
             var template = void 0;
@@ -371,7 +394,7 @@ var MioxKoaVue2xServerRender = function () {
 
             clientCompiler.plugin('done', function () {
                 var fs = devMiddleware.fileSystem;
-                var filePath = _path2.default.join(_this6.clientConfig.output.path, _this6.options.template || 'index.html');
+                var filePath = _path2.default.join(_this7.clientConfig.output.path, _this7.options.template || 'index.html');
                 if (fs.existsSync(filePath)) {
                     template = fs.readFileSync(filePath, 'utf-8');
                     if (bundle) {
@@ -400,7 +423,7 @@ var MioxKoaVue2xServerRender = function () {
                 });
 
                 // read bundle generated by vue-ssr-webpack-plugin
-                var bundlePath = _path2.default.join(_this6.serverConfig.output.path, _this6.options.bundle || 'vue-ssr-bundle.json');
+                var bundlePath = _path2.default.join(_this7.serverConfig.output.path, _this7.options.bundle || 'vue-ssr-bundle.json');
                 bundle = JSON.parse(mfs.readFileSync(bundlePath, 'utf-8'));
                 if (template) {
                     cb(bundle, template);
@@ -409,10 +432,7 @@ var MioxKoaVue2xServerRender = function () {
         }
     }]);
     return MioxKoaVue2xServerRender;
-}(); /**
-      * Created by evio on 2017/3/22.
-      */
-
+}(_events.EventEmitter);
 
 exports.default = MioxKoaVue2xServerRender;
 module.exports = exports['default'];

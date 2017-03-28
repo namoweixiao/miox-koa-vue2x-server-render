@@ -14,8 +14,9 @@ import clientConfig from './webpack/webpack.client.config';
 import serverConfig from './webpack/webpack.server.config';
 import webpackDevMiddleWare from 'webpack-dev-middleware';
 import hotMiddleWare from 'webpack-hot-middleware';
+import { EventEmitter } from 'events';
 
-export default class MioxKoaVue2xServerRender {
+export default class MioxKoaVue2xServerRender extends EventEmitter {
     /**
      * 配置
      * @param app
@@ -34,6 +35,7 @@ export default class MioxKoaVue2xServerRender {
      *  - bundle: <String> bundle名
      */
     constructor(app, options = {}) {
+        super();
         this.renderer = null;
         this.productionEnv = process.env.NODE_ENV === 'production';
         this.app = app;
@@ -160,6 +162,7 @@ export default class MioxKoaVue2xServerRender {
 
     RUN_IN_PRODUCTION_STATIC(PATH_BUILD_PREFIX) {
         const { maxAge, gzip, dynamic, ...args } = this.options.static || {};
+        this.emit('beforeStatic');
         this.app.use(Convert(staticCache(PATH_BUILD_PREFIX, {
             "prefix": this.options.prefix
                 ? `${this.options.prefix}/${this.options.build}`
