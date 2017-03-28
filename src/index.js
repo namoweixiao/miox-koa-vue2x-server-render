@@ -153,7 +153,7 @@ export default class MioxKoaVue2xServerRender extends EventEmitter {
     }
 
     RUN_IN_PRODUCTION() {
-        const PATH_BUILD_PREFIX = path.resolve(this.cwd, this.options.build);
+        const PATH_BUILD_PREFIX = path.resolve(this.options.cwd, this.options.build);
         const PATH_SSR_BUNDLE = path.resolve(PATH_BUILD_PREFIX, this.options.bundle || 'vue-ssr-bundle.json');
         const PATH_SSR_TEMPLATE = path.resolve(PATH_BUILD_PREFIX, this.options.template || 'index.html');
         const bundle = require(PATH_SSR_BUNDLE);

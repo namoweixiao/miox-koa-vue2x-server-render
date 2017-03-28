@@ -338,7 +338,7 @@ var MioxKoaVue2xServerRender = function (_EventEmitter) {
     }, {
         key: 'RUN_IN_PRODUCTION',
         value: function RUN_IN_PRODUCTION() {
-            var PATH_BUILD_PREFIX = _path2.default.resolve(this.cwd, this.options.build);
+            var PATH_BUILD_PREFIX = _path2.default.resolve(this.options.cwd, this.options.build);
             var PATH_SSR_BUNDLE = _path2.default.resolve(PATH_BUILD_PREFIX, this.options.bundle || 'vue-ssr-bundle.json');
             var PATH_SSR_TEMPLATE = _path2.default.resolve(PATH_BUILD_PREFIX, this.options.template || 'index.html');
             var bundle = require(PATH_SSR_BUNDLE);
