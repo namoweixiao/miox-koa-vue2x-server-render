@@ -162,7 +162,7 @@ export default class MioxKoaVue2xServerRender extends EventEmitter {
 
     RUN_IN_PRODUCTION_STATIC(PATH_BUILD_PREFIX) {
         const { maxAge, gzip, dynamic, ...args } = this.options.static || {};
-        this.emit('beforeStatic');
+        this.emit('beforeProStatic');
         this.app.use(Convert(staticCache(PATH_BUILD_PREFIX, {
             "prefix": this.options.prefix
                 ? `${this.options.prefix}/${this.options.build}`
@@ -172,13 +172,15 @@ export default class MioxKoaVue2xServerRender extends EventEmitter {
             "dynamic": dynamic === undefined ? true : !!dynamic,
             ...args
         })));
-        this.emit('afterStatic');
+        this.emit('afterProStatic');
     }
 
     RUN_IN_DEVELOPMENT() {
+        this.emit('beforeDevServer');
         this.SETUP_DEV_SERVER((bundle, template) => {
             this.renderer = this.createRenderer(bundle, template);
         });
+        this.emit('afterDevServer');
     }
 
     SETUP_DEV_SERVER(cb) {

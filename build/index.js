@@ -353,23 +353,25 @@ var MioxKoaVue2xServerRender = function (_EventEmitter) {
                 dynamic = _ref4.dynamic,
                 args = (0, _objectWithoutProperties3.default)(_ref4, ['maxAge', 'gzip', 'dynamic']);
 
-            this.emit('beforeStatic');
+            this.emit('beforeProStatic');
             this.app.use((0, _koaConvert2.default)((0, _koaStaticCache2.default)(PATH_BUILD_PREFIX, (0, _extends3.default)({
                 "prefix": this.options.prefix ? this.options.prefix + '/' + this.options.build : '/' + this.options.build,
                 "maxAge": maxAge === undefined ? 31536000 : maxAge,
                 "gzip": gzip ? true : !!gzip,
                 "dynamic": dynamic === undefined ? true : !!dynamic
             }, args))));
-            this.emit('afterStatic');
+            this.emit('afterProStatic');
         }
     }, {
         key: 'RUN_IN_DEVELOPMENT',
         value: function RUN_IN_DEVELOPMENT() {
             var _this6 = this;
 
+            this.emit('beforeDevServer');
             this.SETUP_DEV_SERVER(function (bundle, template) {
                 _this6.renderer = _this6.createRenderer(bundle, template);
             });
+            this.emit('afterDevServer');
         }
     }, {
         key: 'SETUP_DEV_SERVER',
