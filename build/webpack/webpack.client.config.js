@@ -39,8 +39,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 /**
  * Created by evio on 2017/3/17.
  */
-var cwd = process.env.NODE_ENV === 'production' ? _path2.default.resolve(__dirname, '../../../../') : process.cwd();
-
 function createLoader(type) {
     var uses = [{ loader: 'css-loader', options: { minimize: true } }];
 
@@ -58,8 +56,8 @@ function createLoader(type) {
 }
 
 function Client(options) {
-    var PATH_BUILD_PREFIX = _path2.default.resolve(cwd, options.build);
-    var PATH_ENTRY_FILE = _path2.default.resolve(cwd, options.entry.dir, options.entry.filename);
+    var PATH_BUILD_PREFIX = _path2.default.resolve(options.cwd, options.build);
+    var PATH_ENTRY_FILE = _path2.default.resolve(options.cwd, options.entry.dir, options.entry.filename);
     var INCLUDE_REGEXP = (0, _source2.default)(options);
 
     var config = {

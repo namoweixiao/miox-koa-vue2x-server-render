@@ -15,7 +15,6 @@ import serverConfig from './webpack/webpack.server.config';
 import webpackDevMiddleWare from 'webpack-dev-middleware';
 import hotMiddleWare from 'webpack-hot-middleware';
 import { EventEmitter } from 'events';
-const cwd = process.env.NODE_ENV === 'production' ? path.resolve(__dirname, '../../../') : process.cwd();
 
 export default class MioxKoaVue2xServerRender extends EventEmitter {
     /**
@@ -34,6 +33,7 @@ export default class MioxKoaVue2xServerRender extends EventEmitter {
      *  - serverCallback: <Function> 修改Server端配置
      *  - externals: <Array> 排出掉的externals配置
      *  - bundle: <String> bundle名
+     *  - cwd: <String>
      */
     constructor(app, options = {}) {
         super();
@@ -153,7 +153,7 @@ export default class MioxKoaVue2xServerRender extends EventEmitter {
     }
 
     RUN_IN_PRODUCTION() {
-        const PATH_BUILD_PREFIX = path.resolve(cwd, this.options.build);
+        const PATH_BUILD_PREFIX = path.resolve(this.cwd, this.options.build);
         const PATH_SSR_BUNDLE = path.resolve(PATH_BUILD_PREFIX, this.options.bundle || 'vue-ssr-bundle.json');
         const PATH_SSR_TEMPLATE = path.resolve(PATH_BUILD_PREFIX, this.options.template || 'index.html');
         const bundle = require(PATH_SSR_BUNDLE);

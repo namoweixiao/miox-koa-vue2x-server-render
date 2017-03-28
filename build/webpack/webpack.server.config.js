@@ -38,11 +38,6 @@ var _extractTextWebpackPlugin2 = _interopRequireDefault(_extractTextWebpackPlugi
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var cwd = process.env.NODE_ENV === 'production' ? _path2.default.resolve(__dirname, '../../../../') : process.cwd(); /**
-                                                                                                                      * Created by evio on 2017/3/17.
-                                                                                                                      */
-
-
 function createLoader(type) {
     var uses = [{ loader: 'css-loader', options: { minimize: true } }];
 
@@ -57,12 +52,15 @@ function createLoader(type) {
     }
 
     return _extractTextWebpackPlugin2.default.extract({ fallback: 'style-loader', use: uses });
-}
+} /**
+   * Created by evio on 2017/3/17.
+   */
+
 
 module.exports = function (options) {
-    var PKG = require(_path2.default.resolve(cwd, 'package.json'));
-    var PATH_ENTRY_FILE = _path2.default.resolve(cwd, options.entry.dir, options.entry.filename);
-    var PATH_BUILD_PREFIX = _path2.default.resolve(cwd, options.build);
+    var PKG = require(_path2.default.resolve(options.cwd, 'package.json'));
+    var PATH_ENTRY_FILE = _path2.default.resolve(options.cwd, options.entry.dir, options.entry.filename);
+    var PATH_BUILD_PREFIX = _path2.default.resolve(options.cwd, options.build);
     var INCLUDE_REGEXP = (0, _source2.default)(options);
     var dependencies = (0, _keys2.default)(PKG.dependencies);
     var externals = options.externals || [];

@@ -1,11 +1,10 @@
 'use strict';
 const path = require('path');
-const cwd = process.env.NODE_ENV === 'production' ? path.resolve(__dirname, '../../../../') : process.cwd();
-const node_modules = path.resolve(cwd, 'node_modules');
 // 需要源码打包的模块，正则，相对 node_modules 的位置
 
 
 module.exports = function(options) {
+    const node_modules = path.resolve(options.cwd, 'node_modules');
     const source_position = [
         /miox[^\/]*\// // miox 开头的包默认源码打包 miox*
     ];

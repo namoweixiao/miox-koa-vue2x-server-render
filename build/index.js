@@ -104,8 +104,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 /**
  * Created by evio on 2017/3/22.
  */
-var cwd = process.env.NODE_ENV === 'production' ? _path2.default.resolve(__dirname, '../../../') : process.cwd();
-
 var MioxKoaVue2xServerRender = function (_EventEmitter) {
     (0, _inherits3.default)(MioxKoaVue2xServerRender, _EventEmitter);
 
@@ -125,6 +123,7 @@ var MioxKoaVue2xServerRender = function (_EventEmitter) {
      *  - serverCallback: <Function> 修改Server端配置
      *  - externals: <Array> 排出掉的externals配置
      *  - bundle: <String> bundle名
+     *  - cwd: <String>
      */
     function MioxKoaVue2xServerRender(app) {
         var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
@@ -339,7 +338,7 @@ var MioxKoaVue2xServerRender = function (_EventEmitter) {
     }, {
         key: 'RUN_IN_PRODUCTION',
         value: function RUN_IN_PRODUCTION() {
-            var PATH_BUILD_PREFIX = _path2.default.resolve(cwd, this.options.build);
+            var PATH_BUILD_PREFIX = _path2.default.resolve(this.cwd, this.options.build);
             var PATH_SSR_BUNDLE = _path2.default.resolve(PATH_BUILD_PREFIX, this.options.bundle || 'vue-ssr-bundle.json');
             var PATH_SSR_TEMPLATE = _path2.default.resolve(PATH_BUILD_PREFIX, this.options.template || 'index.html');
             var bundle = require(PATH_SSR_BUNDLE);
