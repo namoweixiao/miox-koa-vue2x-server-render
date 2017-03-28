@@ -1,7 +1,7 @@
 'use strict';
 const path = require('path');
-
-const node_modules = path.resolve(process.cwd(), 'node_modules');
+const cwd = process.env.NODE_ENV === 'production' ? path.resolve(__dirname, '../../../../') : process.cwd();
+const node_modules = path.resolve(cwd, 'node_modules');
 // 需要源码打包的模块，正则，相对 node_modules 的位置
 
 

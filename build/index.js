@@ -104,6 +104,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 /**
  * Created by evio on 2017/3/22.
  */
+var cwd = process.env.NODE_ENV === 'production' ? _path2.default.resolve(__dirname, '../../../') : process.cwd();
+
 var MioxKoaVue2xServerRender = function (_EventEmitter) {
     (0, _inherits3.default)(MioxKoaVue2xServerRender, _EventEmitter);
 
@@ -275,7 +277,6 @@ var MioxKoaVue2xServerRender = function (_EventEmitter) {
         value: function cast(ctx, body, code) {
             ctx.type = 'html';
             ctx.body = body;
-            console.log('cast code:', code);
             ctx.status = code || 200;
         }
     }, {
@@ -315,8 +316,9 @@ var MioxKoaVue2xServerRender = function (_EventEmitter) {
 
                                 case 8:
 
-                                    if (body instanceof Error || typeof body.code === 'number') {
-                                        _this5.cast(ctx, (body.code || 500) + ' | ' + body.message, body.code || 500);
+                                    if (body instanceof Error || body.code) {
+                                        console.log(new Date(), body);
+                                        _this5.cast(ctx, (body.code || 500) + ' | ' + body.message, typeof body.code === 'string' ? 500 : body.code);
                                     } else {
                                         _this5.cast(ctx, body);
                                     }
@@ -337,7 +339,7 @@ var MioxKoaVue2xServerRender = function (_EventEmitter) {
     }, {
         key: 'RUN_IN_PRODUCTION',
         value: function RUN_IN_PRODUCTION() {
-            var PATH_BUILD_PREFIX = _path2.default.resolve(process.cwd(), this.options.build);
+            var PATH_BUILD_PREFIX = _path2.default.resolve(cwd, this.options.build);
             var PATH_SSR_BUNDLE = _path2.default.resolve(PATH_BUILD_PREFIX, this.options.bundle || 'vue-ssr-bundle.json');
             var PATH_SSR_TEMPLATE = _path2.default.resolve(PATH_BUILD_PREFIX, this.options.template || 'index.html');
             var bundle = require(PATH_SSR_BUNDLE);

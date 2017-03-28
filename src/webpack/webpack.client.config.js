@@ -8,6 +8,8 @@ import AutoPrefixer from 'autoprefixer';
 import ExtractTextPlugin from 'extract-text-webpack-plugin';
 import source_modules from './source.modules';
 
+const cwd = process.env.NODE_ENV === 'production' ? path.resolve(__dirname, '../../../../') : process.cwd();
+
 function createLoader(type) {
     const uses = [{ loader: `css-loader`, options: { minimize: true }}];
 
@@ -25,8 +27,8 @@ function createLoader(type) {
 }
 
 export default function Client(options) {
-    const PATH_BUILD_PREFIX = path.resolve(process.cwd(), options.build);
-    const PATH_ENTRY_FILE = path.resolve(process.cwd(), options.entry.dir, options.entry.filename);
+    const PATH_BUILD_PREFIX = path.resolve(cwd, options.build);
+    const PATH_ENTRY_FILE = path.resolve(cwd, options.entry.dir, options.entry.filename);
     const INCLUDE_REGEXP = source_modules(options);
 
     const config = {

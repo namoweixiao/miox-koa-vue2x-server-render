@@ -9,6 +9,8 @@ import AutoPrefixer from 'autoprefixer';
 import VueSSRPlugin from 'vue-ssr-webpack-plugin';
 import ExtractTextPlugin from 'extract-text-webpack-plugin';
 
+const cwd = process.env.NODE_ENV === 'production' ? path.resolve(__dirname, '../../../../') : process.cwd();
+
 function createLoader(type) {
     const uses = [{ loader: `css-loader`, options: { minimize: true }}];
 
@@ -26,9 +28,9 @@ function createLoader(type) {
 }
 
 module.exports = options => {
-    const PKG = require(path.resolve(process.cwd(), 'package.json'));
-    const PATH_ENTRY_FILE = path.resolve(process.cwd(), options.entry.dir, options.entry.filename);
-    const PATH_BUILD_PREFIX = path.resolve(process.cwd(), options.build);
+    const PKG = require(path.resolve(cwd, 'package.json'));
+    const PATH_ENTRY_FILE = path.resolve(cwd, options.entry.dir, options.entry.filename);
+    const PATH_BUILD_PREFIX = path.resolve(cwd, options.build);
     const INCLUDE_REGEXP = source_modules(options);
     const dependencies = Object.keys(PKG.dependencies);
     let externals = options.externals || [];

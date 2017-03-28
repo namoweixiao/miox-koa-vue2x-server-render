@@ -15,6 +15,7 @@ import serverConfig from './webpack/webpack.server.config';
 import webpackDevMiddleWare from 'webpack-dev-middleware';
 import hotMiddleWare from 'webpack-hot-middleware';
 import { EventEmitter } from 'events';
+const cwd = process.env.NODE_ENV === 'production' ? path.resolve(__dirname, '../../../') : process.cwd();
 
 export default class MioxKoaVue2xServerRender extends EventEmitter {
     /**
@@ -125,7 +126,6 @@ export default class MioxKoaVue2xServerRender extends EventEmitter {
     cast(ctx, body, code) {
         ctx.type = 'html';
         ctx.body = body;
-        console.log('cast code:', code)
         ctx.status = code || 200;
     }
 
@@ -143,8 +143,9 @@ export default class MioxKoaVue2xServerRender extends EventEmitter {
                 return await next();
             }
 
-            if (body instanceof Error || typeof body.code === 'number') {
-                this.cast(ctx, `${body.code || 500} | ${body.message}`, body.code || 500);
+            if (body instanceof Error || body.code) {
+                console.log(new Date(), body);
+                this.cast(ctx, `${body.code || 500} | ${body.message}`, typeof body.code === 'string' ? 500 : body.code);
             } else {
                 this.cast(ctx, body);
             }
@@ -152,7 +153,7 @@ export default class MioxKoaVue2xServerRender extends EventEmitter {
     }
 
     RUN_IN_PRODUCTION() {
-        const PATH_BUILD_PREFIX = path.resolve(process.cwd(), this.options.build);
+        const PATH_BUILD_PREFIX = path.resolve(cwd, this.options.build);
         const PATH_SSR_BUNDLE = path.resolve(PATH_BUILD_PREFIX, this.options.bundle || 'vue-ssr-bundle.json');
         const PATH_SSR_TEMPLATE = path.resolve(PATH_BUILD_PREFIX, this.options.template || 'index.html');
         const bundle = require(PATH_SSR_BUNDLE);
