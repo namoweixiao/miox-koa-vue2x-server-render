@@ -125,6 +125,7 @@ export default class MioxKoaVue2xServerRender extends EventEmitter {
     cast(ctx, body, code) {
         ctx.type = 'html';
         ctx.body = body;
+        console.log('cast code:', code)
         ctx.status = code || 200;
     }
 

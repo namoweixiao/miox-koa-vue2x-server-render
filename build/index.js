@@ -275,6 +275,7 @@ var MioxKoaVue2xServerRender = function (_EventEmitter) {
         value: function cast(ctx, body, code) {
             ctx.type = 'html';
             ctx.body = body;
+            console.log('cast code:', code);
             ctx.status = code || 200;
         }
     }, {
