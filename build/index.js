@@ -314,7 +314,7 @@ var MioxKoaVue2xServerRender = function (_EventEmitter) {
 
                                 case 8:
 
-                                    if (body instanceof Error || body.code) {
+                                    if (body instanceof Error || typeof body.code === 'number') {
                                         _this5.cast(ctx, (body.code || 500) + ' | ' + body.message, body.code || 500);
                                     } else {
                                         _this5.cast(ctx, body);

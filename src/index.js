@@ -142,7 +142,7 @@ export default class MioxKoaVue2xServerRender extends EventEmitter {
                 return await next();
             }
 
-            if (body instanceof Error || body.code) {
+            if (body instanceof Error || typeof body.code === 'number') {
                 this.cast(ctx, `${body.code || 500} | ${body.message}`, body.code || 500);
             } else {
                 this.cast(ctx, body);
