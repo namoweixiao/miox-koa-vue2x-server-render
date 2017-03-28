@@ -360,6 +360,7 @@ var MioxKoaVue2xServerRender = function (_EventEmitter) {
                 "gzip": gzip ? true : !!gzip,
                 "dynamic": dynamic === undefined ? true : !!dynamic
             }, args))));
+            this.emit('afterStatic');
         }
     }, {
         key: 'RUN_IN_DEVELOPMENT',

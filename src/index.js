@@ -172,6 +172,7 @@ export default class MioxKoaVue2xServerRender extends EventEmitter {
             "dynamic": dynamic === undefined ? true : !!dynamic,
             ...args
         })));
+        this.emit('afterStatic');
     }
 
     RUN_IN_DEVELOPMENT() {
