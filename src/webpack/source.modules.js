@@ -10,6 +10,19 @@ module.exports = function(options) {
     ];
     let dir = path.normalize(options.entry.dir).replace(/\/$/, '').replace(/\//g, '\\/');
     source_position.push(new RegExp(`^\.\.\/${dir}\/`));
+    if (options.exclude) {
+        if (!Array.isArray(options.exclude)) {
+            options.exclude = [options.exclude];
+        }
+        let i = options.exclude.length;
+        while (i--) {
+            let exc = options.exclude[i];
+            if (typeof exc === 'string') {
+                exc = new RegExp(exc);
+            }
+            source_position.push(exc);
+        }
+    }
 
     return function source_modules(pather){
         const position = path.relative(node_modules, pather);
