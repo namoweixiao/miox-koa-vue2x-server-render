@@ -10,10 +10,6 @@ var _stringify2 = _interopRequireDefault(_stringify);
 
 exports.default = Client;
 
-var _path = require('path');
-
-var _path2 = _interopRequireDefault(_path);
-
 var _webpack = require('webpack');
 
 var _webpack2 = _interopRequireDefault(_webpack);
@@ -22,84 +18,31 @@ var _htmlWebpackPlugin = require('html-webpack-plugin');
 
 var _htmlWebpackPlugin2 = _interopRequireDefault(_htmlWebpackPlugin);
 
-var _autoprefixer = require('autoprefixer');
-
-var _autoprefixer2 = _interopRequireDefault(_autoprefixer);
-
 var _extractTextWebpackPlugin = require('extract-text-webpack-plugin');
 
 var _extractTextWebpackPlugin2 = _interopRequireDefault(_extractTextWebpackPlugin);
 
-var _source = require('./source.modules');
-
-var _source2 = _interopRequireDefault(_source);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-/**
- * Created by evio on 2017/3/17.
- */
-function createLoader(type) {
-    var uses = [{ loader: 'css-loader', options: { minimize: true } }];
-
-    switch (type) {
-        case 'css':
-            break;
-        case 'scss':
-            uses.push('sass-loader');
-            break;
-        default:
-            uses.push(type + '-loader');
-    }
-
-    return _extractTextWebpackPlugin2.default.extract({ fallback: 'style-loader', use: uses });
-}
-
-function Client(options) {
-    var PATH_BUILD_PREFIX = _path2.default.resolve(options.cwd, options.build);
-    var PATH_ENTRY_FILE = _path2.default.resolve(options.cwd, options.entry.dir, options.entry.filename);
-    var INCLUDE_REGEXP = (0, _source2.default)(options);
+function Client(_ref) {
+    var PATH_BUILD_PREFIX = _ref.PATH_BUILD_PREFIX,
+        PATH_ENTRY_FILE = _ref.PATH_ENTRY_FILE,
+        options = _ref.options;
 
     var config = {
         devtool: "#inline-source-map",
         entry: {
-            'vendor': ['miox-router', 'vue', 'vuex', 'miox-vue2x-classify'],
+            'vendor': options.vendors,
             'app': [PATH_ENTRY_FILE]
         },
         output: {
             path: PATH_BUILD_PREFIX,
-            publicPath: options.prefix ? options.prefix + '/' + options.build : '/' + options.build,
+            publicPath: options.prefix && options.prefix !== '/' ? options.prefix + '/' + options.build : '/' + options.build,
             filename: 'client.[name].[hash].js'
         },
         module: {
             noParse: /es6-promise\.js$/,
-            rules: [{
-                test: /\.vue$/,
-                loader: 'vue-loader',
-                include: INCLUDE_REGEXP,
-                options: {
-                    preserveWhitespace: false,
-                    postcss: [(0, _autoprefixer2.default)({ browsers: ['last 20 versions'] })],
-                    loaders: { css: createLoader('css'), less: createLoader('less'), scss: createLoader('scss') }
-                }
-            }, {
-                test: /\.js$/,
-                use: { loader: 'babel-loader' },
-                include: INCLUDE_REGEXP
-            }, {
-                test: /\.jsx$/,
-                use: { loader: 'babel-loader' },
-                include: INCLUDE_REGEXP
-            }, {
-                test: /\.css$/,
-                loader: createLoader('css')
-            }, {
-                test: /\.less$/,
-                loader: createLoader('less')
-            }, {
-                test: /\.scss$/,
-                loader: createLoader('scss')
-            }]
+            rules: []
         },
         plugins: [new _webpack2.default.DefinePlugin({
             'process.env.NODE_ENV': (0, _stringify2.default)(process.env.NODE_ENV || 'development'),
@@ -119,5 +62,7 @@ function Client(options) {
     }
 
     return config;
-}
+} /**
+   * Created by evio on 2017/3/17.
+   */
 module.exports = exports['default'];

@@ -10,7 +10,7 @@ const app = new Koa();
 const indexRoute = new Router();
 const pageRoute = new Router();
 const server = new ServerRender(pageRoute, config);
-
+server.loader(server.jsx, server.css, server.less, server.sass);
 server.connect();
 pageRoute.get('/(.+)?', async (ctx, next) => await next());
 

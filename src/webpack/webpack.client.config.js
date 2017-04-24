@@ -1,83 +1,27 @@
 /**
  * Created by evio on 2017/3/17.
  */
-import path from 'path';
 import webpack from 'webpack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
-import AutoPrefixer from 'autoprefixer';
 import ExtractTextPlugin from 'extract-text-webpack-plugin';
-import source_modules from './source.modules';
 
-function createLoader(type) {
-    const uses = [{ loader: `css-loader`, options: { minimize: true }}];
-
-    switch (type) {
-        case 'css':
-            break;
-        case 'scss':
-            uses.push(`sass-loader`);
-            break;
-        default:
-            uses.push(`${type}-loader`);
-    }
-
-    return ExtractTextPlugin.extract({ fallback: 'style-loader', use: uses });
-}
-
-export default function Client(options) {
-    const PATH_BUILD_PREFIX = path.resolve(options.cwd, options.build);
-    const PATH_ENTRY_FILE = path.resolve(options.cwd, options.entry.dir, options.entry.filename);
-    const INCLUDE_REGEXP = source_modules(options);
-
+export default function Client({ PATH_BUILD_PREFIX, PATH_ENTRY_FILE, options }) {
     const config = {
         devtool: "#inline-source-map",
         entry: {
-            'vendor': ['miox-router', 'vue', 'vuex', 'miox-vue2x-classify'],
+            'vendor': options.vendors,
             'app': [PATH_ENTRY_FILE]
         },
         output: {
             path: PATH_BUILD_PREFIX,
-            publicPath: options.prefix
+            publicPath: options.prefix && (options.prefix !== '/')
                 ? `${options.prefix}/${options.build}`
                 : '/' + options.build,
             filename: 'client.[name].[hash].js',
         },
         module: {
             noParse: /es6-promise\.js$/,
-            rules: [
-                {
-                    test: /\.vue$/,
-                    loader: 'vue-loader',
-                    include: INCLUDE_REGEXP,
-                    options: {
-                        preserveWhitespace: false,
-                        postcss: [ AutoPrefixer({browsers: ['last 20 versions']}) ],
-                        loaders: { css: createLoader('css'),  less: createLoader('less'),  scss: createLoader('scss') }
-                    }
-                },
-                {
-                    test: /\.js$/,
-                    use: { loader: 'babel-loader', },
-                    include: INCLUDE_REGEXP
-                },
-                {
-                    test: /\.jsx$/,
-                    use: { loader: 'babel-loader', },
-                    include: INCLUDE_REGEXP
-                },
-                {
-                    test: /\.css$/,
-                    loader: createLoader('css')
-                },
-                {
-                    test: /\.less$/,
-                    loader: createLoader('less')
-                },
-                {
-                    test: /\.scss$/,
-                    loader: createLoader('scss')
-                }
-            ]
+            rules: []
         },
         plugins: [
             new webpack.DefinePlugin({

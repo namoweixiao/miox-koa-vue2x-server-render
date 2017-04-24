@@ -1,39 +1,14 @@
 /**
  * Created by evio on 2017/3/17.
  */
-import path from 'path';
 import webpack from 'webpack';
 import unique from 'array-unique';
-import source_modules from './source.modules';
-import AutoPrefixer from 'autoprefixer';
 import VueSSRPlugin from 'vue-ssr-webpack-plugin';
 import ExtractTextPlugin from 'extract-text-webpack-plugin';
 
-function createLoader(type) {
-    const uses = [{ loader: `css-loader`, options: { minimize: true }}];
-
-    switch (type) {
-        case 'css':
-            break;
-        case 'scss':
-            uses.push(`sass-loader`);
-            break;
-        default:
-            uses.push(`${type}-loader`);
-    }
-
-    return ExtractTextPlugin.extract({ fallback: 'style-loader', use: uses });
-}
-
-module.exports = options => {
-    const PKG = require(path.resolve(options.cwd, 'package.json'));
-    const PATH_ENTRY_FILE = path.resolve(options.cwd, options.entry.dir, options.entry.filename);
-    const PATH_BUILD_PREFIX = path.resolve(options.cwd, options.build);
-    const INCLUDE_REGEXP = source_modules(options);
+export default function Server({ PKG, PATH_ENTRY_FILE, PATH_BUILD_PREFIX, options }) {
     const dependencies = Object.keys(PKG.dependencies);
-    let externals = options.externals || [];
-    externals.push('normalize.css', 'miox-simple', 'miox-core', 'miox-router', 'vuex', 'vue', 'miox-vue2x');
-    externals = unique(externals);
+    const externals = options.vendors;
     let i = externals.length;
     while (i--) {
         const index = dependencies.indexOf(externals[i]);
@@ -49,7 +24,7 @@ module.exports = options => {
         entry: PATH_ENTRY_FILE,
         output: {
             path: PATH_BUILD_PREFIX,
-            publicPath: options.prefix
+            publicPath: options.prefix && (options.prefix !== '/')
                 ? `${options.prefix}/${options.build}`
                 : '/' + options.build,
             filename: 'server-bundle.js',
@@ -57,40 +32,7 @@ module.exports = options => {
         },
         module: {
             noParse: /es6-promise\.js$/,
-            rules: [
-                {
-                    test: /\.vue$/,
-                    loader: 'vue-loader',
-                    include: INCLUDE_REGEXP,
-                    options: {
-                        preserveWhitespace: false,
-                        postcss: [ AutoPrefixer({browsers: ['last 20 versions']}) ],
-                        loaders: { css: createLoader('css'),  less: createLoader('less'),  scss: createLoader('scss') }
-                    }
-                },
-                {
-                    test: /\.js$/,
-                    use: { loader: 'babel-loader', },
-                    include: INCLUDE_REGEXP
-                },
-                {
-                    test: /\.jsx$/,
-                    use: { loader: 'babel-loader', },
-                    include: INCLUDE_REGEXP
-                },
-                {
-                    test: /\.css$/,
-                    loader: createLoader('css')
-                },
-                {
-                    test: /\.less$/,
-                    loader: createLoader('less')
-                },
-                {
-                    test: /\.scss$/,
-                    loader: createLoader('scss')
-                }
-            ]
+            rules: []
         },
         plugins: [
             new webpack.DefinePlugin({

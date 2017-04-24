@@ -15,6 +15,10 @@ import serverConfig from './webpack/webpack.server.config';
 import webpackDevMiddleWare from 'webpack-dev-middleware';
 import hotMiddleWare from 'webpack-hot-middleware';
 import { EventEmitter } from 'events';
+import source_modules from './webpack/source.modules';
+import ExtractTextPlugin from 'extract-text-webpack-plugin';
+import AutoPrefixer from 'autoprefixer';
+import unique from 'array-unique';
 
 export default class MioxKoaVue2xServerRender extends EventEmitter {
     /**
@@ -41,16 +45,137 @@ export default class MioxKoaVue2xServerRender extends EventEmitter {
         this.productionEnv = process.env.NODE_ENV === 'production';
         this.app = app;
         this.options = options;
-        this.clientConfig = clientConfig(this.options);
-        this.serverConfig = serverConfig(this.options);
 
-        if (typeof this.options.clientCallback === 'function') {
-            this.clientConfig = this.options.clientCallback(this.clientConfig);
+        if (!this.options.cwd) {
+            this.options.cwd = process.cwd();
         }
 
-        if (typeof this.options.serverCallback === 'function') {
-            this.serverConfig = this.options.serverCallback(this.serverConfig);
+        if (!this.options.vendors) {
+            this.options.vendors = unique(['miox-router', 'vue', 'miox-vue2x-classify'].concat(this.options.vendors || []));
         }
+
+        this.PKG = require(path.resolve(options.cwd, 'package.json'));
+        this.PATH_ENTRY_FILE = path.resolve(options.cwd, options.entry.dir, options.entry.filename);
+        this.PATH_BUILD_PREFIX = path.resolve(options.cwd, options.build);
+        this.INCLUDE_REGEXP = source_modules(options);
+        this.loaders = {};
+        this.rules = {
+            "vue": {
+                test: /\.vue$/,
+                loader: 'vue-loader',
+                include: this.INCLUDE_REGEXP,
+                options: {
+                    preserveWhitespace: false,
+                    postcss: [
+                        AutoPrefixer({
+                            browsers: ['last 20 versions']
+                        })
+                    ],
+                    loaders: {}
+                }
+            },
+            "js": {
+                test: /\.js$/,
+                use: { loader: 'babel-loader' },
+                include: this.INCLUDE_REGEXP
+            }
+        }
+    }
+
+    loader(...args) {
+        for (let i = 0 ; i < args.length; i++) {
+            const arg = args[i];
+            if (typeof arg === 'function') {
+                arg.call(this);
+            }
+        }
+
+        return this;
+    }
+
+    css() {
+        const _loader = this.createLoader('css');
+        this.loaders.css = {
+            vue(options) {
+                options.css = _loader;
+            },
+            common(options) {
+                options.push({
+                    test: /\.css$/,
+                    loader: _loader
+                })
+            }
+        };
+    }
+
+    less() {
+        const _loader = this.createLoader('less');
+        this.loaders.less = {
+            vue(options) {
+                options.less = _loader;
+            },
+            common(options) {
+                options.push({
+                    test: /\.less$/,
+                    loader: _loader
+                })
+            }
+        };
+    }
+
+    sass() {
+        const _loader = this.createLoader('scss');
+        this.loaders.sass = {
+            vue(options) {
+                options.scss = _loader;
+            },
+            common(options) {
+                options.push({
+                    test: /\.scss$/,
+                    loader: _loader
+                })
+            }
+        };
+    }
+
+    jsx() {
+        const that = this;
+        this.loaders.jsx = {
+            vue(options) {
+                options.jsx = {
+                    use: { loader: 'babel-loader' },
+                    include: that.INCLUDE_REGEXP
+                }
+            },
+            common(options) {
+                options.push({
+                    test: /\.js$/,
+                    use: { loader: 'babel-loader' },
+                    include: that.INCLUDE_REGEXP
+                });
+            }
+        }
+    }
+
+    createLoader(type) {
+        const uses = [
+            {
+                loader: `css-loader`,
+                options: { minimize: true }
+            }
+        ];
+
+        switch (type) {
+            case 'css':
+                break;
+            case 'scss':
+                uses.push(`sass-loader`);
+                break;
+            default:
+                uses.push(`${type}-loader`);
+        }
+
+        return ExtractTextPlugin.extract({ fallback: 'style-loader', use: uses });
     }
 
     connect() {
@@ -77,6 +202,39 @@ export default class MioxKoaVue2xServerRender extends EventEmitter {
     }
 
     init() {
+        this.clientConfig = clientConfig({
+            PATH_BUILD_PREFIX: this.PATH_BUILD_PREFIX,
+            PATH_ENTRY_FILE: this.PATH_ENTRY_FILE,
+            options: this.options
+        });
+        this.serverConfig = serverConfig({
+            PKG: this.PKG,
+            PATH_BUILD_PREFIX: this.PATH_BUILD_PREFIX,
+            PATH_ENTRY_FILE: this.PATH_ENTRY_FILE,
+            options: this.options
+        });
+
+        const loaders = this.loaders;
+        for (const loader in loaders) {
+            const { vue, common } = loaders[loader];
+            vue(this.rules.vue.options.loaders);
+            common(this.clientConfig.module.rules);
+            common(this.serverConfig.module.rules);
+        }
+
+        for (const rule in this.rules) {
+            this.clientConfig.module.rules.push(this.rules[rule]);
+            this.serverConfig.module.rules.push(this.rules[rule]);
+        }
+
+        if (typeof this.options.clientCallback === 'function') {
+            this.clientConfig = this.options.clientCallback(this.clientConfig);
+        }
+
+        if (typeof this.options.serverCallback === 'function') {
+            this.serverConfig = this.options.serverCallback(this.serverConfig);
+        }
+
         this.app.use(async (ctx, next) => {
             if (!this.productionEnv){
                 ctx.status = 200;
@@ -166,7 +324,7 @@ export default class MioxKoaVue2xServerRender extends EventEmitter {
         const { maxAge, gzip, dynamic, ...args } = this.options.static || {};
         this.emit('beforeProStatic');
         this.app.use(Convert(staticCache(PATH_BUILD_PREFIX, {
-            "prefix": this.options.prefix
+            "prefix": this.options.prefix && (this.options.prefix !== '/')
                 ? `${this.options.prefix}/${this.options.build}`
                 : '/' + this.options.build,
             "maxAge": maxAge === undefined ? 31536000 : maxAge,

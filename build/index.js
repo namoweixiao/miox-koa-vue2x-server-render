@@ -99,6 +99,22 @@ var _webpackHotMiddleware2 = _interopRequireDefault(_webpackHotMiddleware);
 
 var _events = require('events');
 
+var _source = require('./webpack/source.modules');
+
+var _source2 = _interopRequireDefault(_source);
+
+var _extractTextWebpackPlugin = require('extract-text-webpack-plugin');
+
+var _extractTextWebpackPlugin2 = _interopRequireDefault(_extractTextWebpackPlugin);
+
+var _autoprefixer = require('autoprefixer');
+
+var _autoprefixer2 = _interopRequireDefault(_autoprefixer);
+
+var _arrayUnique = require('array-unique');
+
+var _arrayUnique2 = _interopRequireDefault(_arrayUnique);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
@@ -135,20 +151,147 @@ var MioxKoaVue2xServerRender = function (_EventEmitter) {
         _this.productionEnv = process.env.NODE_ENV === 'production';
         _this.app = app;
         _this.options = options;
-        _this.clientConfig = (0, _webpackClient2.default)(_this.options);
-        _this.serverConfig = (0, _webpackServer2.default)(_this.options);
 
-        if (typeof _this.options.clientCallback === 'function') {
-            _this.clientConfig = _this.options.clientCallback(_this.clientConfig);
+        if (!_this.options.cwd) {
+            _this.options.cwd = process.cwd();
         }
 
-        if (typeof _this.options.serverCallback === 'function') {
-            _this.serverConfig = _this.options.serverCallback(_this.serverConfig);
+        if (!_this.options.vendors) {
+            _this.options.vendors = (0, _arrayUnique2.default)(['miox-router', 'vue', 'miox-vue2x-classify'].concat(_this.options.vendors || []));
         }
+
+        _this.PKG = require(_path2.default.resolve(options.cwd, 'package.json'));
+        _this.PATH_ENTRY_FILE = _path2.default.resolve(options.cwd, options.entry.dir, options.entry.filename);
+        _this.PATH_BUILD_PREFIX = _path2.default.resolve(options.cwd, options.build);
+        _this.INCLUDE_REGEXP = (0, _source2.default)(options);
+        _this.loaders = {};
+        _this.rules = {
+            "vue": {
+                test: /\.vue$/,
+                loader: 'vue-loader',
+                include: _this.INCLUDE_REGEXP,
+                options: {
+                    preserveWhitespace: false,
+                    postcss: [(0, _autoprefixer2.default)({
+                        browsers: ['last 20 versions']
+                    })],
+                    loaders: {}
+                }
+            },
+            "js": {
+                test: /\.js$/,
+                use: { loader: 'babel-loader' },
+                include: _this.INCLUDE_REGEXP
+            }
+        };
         return _this;
     }
 
     (0, _createClass3.default)(MioxKoaVue2xServerRender, [{
+        key: 'loader',
+        value: function loader() {
+            for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+                args[_key] = arguments[_key];
+            }
+
+            for (var i = 0; i < args.length; i++) {
+                var arg = args[i];
+                if (typeof arg === 'function') {
+                    arg.call(this);
+                }
+            }
+
+            return this;
+        }
+    }, {
+        key: 'css',
+        value: function css() {
+            var _loader = this.createLoader('css');
+            this.loaders.css = {
+                vue: function vue(options) {
+                    options.css = _loader;
+                },
+                common: function common(options) {
+                    options.push({
+                        test: /\.css$/,
+                        loader: _loader
+                    });
+                }
+            };
+        }
+    }, {
+        key: 'less',
+        value: function less() {
+            var _loader = this.createLoader('less');
+            this.loaders.less = {
+                vue: function vue(options) {
+                    options.less = _loader;
+                },
+                common: function common(options) {
+                    options.push({
+                        test: /\.less$/,
+                        loader: _loader
+                    });
+                }
+            };
+        }
+    }, {
+        key: 'sass',
+        value: function sass() {
+            var _loader = this.createLoader('scss');
+            this.loaders.sass = {
+                vue: function vue(options) {
+                    options.scss = _loader;
+                },
+                common: function common(options) {
+                    options.push({
+                        test: /\.scss$/,
+                        loader: _loader
+                    });
+                }
+            };
+        }
+    }, {
+        key: 'jsx',
+        value: function jsx() {
+            var that = this;
+            this.loaders.jsx = {
+                vue: function vue(options) {
+                    options.jsx = {
+                        use: { loader: 'babel-loader' },
+                        include: that.INCLUDE_REGEXP
+                    };
+                },
+                common: function common(options) {
+                    options.push({
+                        test: /\.js$/,
+                        use: { loader: 'babel-loader' },
+                        include: that.INCLUDE_REGEXP
+                    });
+                }
+            };
+        }
+    }, {
+        key: 'createLoader',
+        value: function createLoader(type) {
+            var uses = [{
+                loader: 'css-loader',
+                options: { minimize: true }
+            }];
+
+            switch (type) {
+                case 'css':
+                    break;
+                case 'scss':
+                    uses.push('sass-loader');
+                    break;
+                default:
+                    uses.push(type + '-loader');
+            }
+
+            return _extractTextWebpackPlugin2.default.extract({ fallback: 'style-loader', use: uses });
+        }
+    }, {
         key: 'connect',
         value: function connect() {
             this.init();
@@ -203,6 +346,42 @@ var MioxKoaVue2xServerRender = function (_EventEmitter) {
         key: 'init',
         value: function init() {
             var _this3 = this;
+
+            this.clientConfig = (0, _webpackClient2.default)({
+                PATH_BUILD_PREFIX: this.PATH_BUILD_PREFIX,
+                PATH_ENTRY_FILE: this.PATH_ENTRY_FILE,
+                options: this.options
+            });
+            this.serverConfig = (0, _webpackServer2.default)({
+                PKG: this.PKG,
+                PATH_BUILD_PREFIX: this.PATH_BUILD_PREFIX,
+                PATH_ENTRY_FILE: this.PATH_ENTRY_FILE,
+                options: this.options
+            });
+
+            var loaders = this.loaders;
+            for (var loader in loaders) {
+                var _loaders$loader = loaders[loader],
+                    vue = _loaders$loader.vue,
+                    common = _loaders$loader.common;
+
+                vue(this.rules.vue.options.loaders);
+                common(this.clientConfig.module.rules);
+                common(this.serverConfig.module.rules);
+            }
+
+            for (var rule in this.rules) {
+                this.clientConfig.module.rules.push(this.rules[rule]);
+                this.serverConfig.module.rules.push(this.rules[rule]);
+            }
+
+            if (typeof this.options.clientCallback === 'function') {
+                this.clientConfig = this.options.clientCallback(this.clientConfig);
+            }
+
+            if (typeof this.options.serverCallback === 'function') {
+                this.serverConfig = this.options.serverCallback(this.serverConfig);
+            }
 
             this.app.use(function () {
                 var _ref2 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee2(ctx, next) {
@@ -357,7 +536,7 @@ var MioxKoaVue2xServerRender = function (_EventEmitter) {
 
             this.emit('beforeProStatic');
             this.app.use((0, _koaConvert2.default)((0, _koaStaticCache2.default)(PATH_BUILD_PREFIX, (0, _extends3.default)({
-                "prefix": this.options.prefix ? this.options.prefix + '/' + this.options.build : '/' + this.options.build,
+                "prefix": this.options.prefix && this.options.prefix !== '/' ? this.options.prefix + '/' + this.options.build : '/' + this.options.build,
                 "maxAge": maxAge === undefined ? 31536000 : maxAge,
                 "gzip": gzip ? true : !!gzip,
                 "dynamic": dynamic === undefined ? true : !!dynamic
