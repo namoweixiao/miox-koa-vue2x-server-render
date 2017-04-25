@@ -68,7 +68,6 @@ export default class MioxKoaVue2xServerRender extends EventEmitter {
             this.options.vendors = unique(['miox-router', 'vue', 'miox-vue2x-classify'].concat(this.options.vendors || []));
         }
 
-        this.PKG = require(path.resolve(options.cwd, 'package.json'));
         this.PATH_ENTRY_FILE = path.resolve(options.cwd, options.entry.dir, options.entry.filename);
         this.PATH_BUILD_PREFIX = path.resolve(options.cwd, options.build);
         this.INCLUDE_REGEXP = source_modules(options);
@@ -223,7 +222,6 @@ export default class MioxKoaVue2xServerRender extends EventEmitter {
             options: this.options
         });
         this.serverConfig = serverConfig({
-            PKG: this.PKG,
             PATH_BUILD_PREFIX: this.PATH_BUILD_PREFIX,
             PATH_ENTRY_FILE: this.PATH_ENTRY_FILE,
             options: this.options

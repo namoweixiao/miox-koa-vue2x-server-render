@@ -6,21 +6,11 @@ import unique from 'array-unique';
 import VueSSRPlugin from 'vue-ssr-webpack-plugin';
 import ExtractTextPlugin from 'extract-text-webpack-plugin';
 
-export default function Server({ PKG, PATH_ENTRY_FILE, PATH_BUILD_PREFIX, options }) {
-    const dependencies = Object.keys(PKG.dependencies);
-    const externals = options.vendors;
-    let i = externals.length;
-    while (i--) {
-        const index = dependencies.indexOf(externals[i]);
-        if (index > -1) {
-            dependencies.splice(index, 1);
-        }
-    }
-
+export default function Server({ PATH_ENTRY_FILE, PATH_BUILD_PREFIX, options }) {
     return {
         target: 'node',
         devtool: "#inline-source-map",
-        externals: dependencies,
+        externals: options.externals,
         entry: PATH_ENTRY_FILE,
         output: {
             path: PATH_BUILD_PREFIX,

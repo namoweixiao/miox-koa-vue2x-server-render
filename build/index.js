@@ -180,7 +180,6 @@ var MioxKoaVue2xServerRender = function (_EventEmitter) {
             _this.options.vendors = (0, _arrayUnique2.default)(['miox-router', 'vue', 'miox-vue2x-classify'].concat(_this.options.vendors || []));
         }
 
-        _this.PKG = require(_path2.default.resolve(options.cwd, 'package.json'));
         _this.PATH_ENTRY_FILE = _path2.default.resolve(options.cwd, options.entry.dir, options.entry.filename);
         _this.PATH_BUILD_PREFIX = _path2.default.resolve(options.cwd, options.build);
         _this.INCLUDE_REGEXP = (0, _source2.default)(options);
@@ -374,7 +373,6 @@ var MioxKoaVue2xServerRender = function (_EventEmitter) {
                 options: this.options
             });
             this.serverConfig = (0, _webpackServer2.default)({
-                PKG: this.PKG,
                 PATH_BUILD_PREFIX: this.PATH_BUILD_PREFIX,
                 PATH_ENTRY_FILE: this.PATH_ENTRY_FILE,
                 options: this.options

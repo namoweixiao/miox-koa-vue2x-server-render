@@ -8,10 +8,6 @@ var _stringify = require('babel-runtime/core-js/json/stringify');
 
 var _stringify2 = _interopRequireDefault(_stringify);
 
-var _keys = require('babel-runtime/core-js/object/keys');
-
-var _keys2 = _interopRequireDefault(_keys);
-
 exports.default = Server;
 
 var _webpack = require('webpack');
@@ -36,25 +32,14 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * Created by evio on 2017/3/17.
  */
 function Server(_ref) {
-    var PKG = _ref.PKG,
-        PATH_ENTRY_FILE = _ref.PATH_ENTRY_FILE,
+    var PATH_ENTRY_FILE = _ref.PATH_ENTRY_FILE,
         PATH_BUILD_PREFIX = _ref.PATH_BUILD_PREFIX,
         options = _ref.options;
-
-    var dependencies = (0, _keys2.default)(PKG.dependencies);
-    var externals = options.vendors;
-    var i = externals.length;
-    while (i--) {
-        var index = dependencies.indexOf(externals[i]);
-        if (index > -1) {
-            dependencies.splice(index, 1);
-        }
-    }
 
     return {
         target: 'node',
         devtool: "#inline-source-map",
-        externals: dependencies,
+        externals: options.externals,
         entry: PATH_ENTRY_FILE,
         output: {
             path: PATH_BUILD_PREFIX,
