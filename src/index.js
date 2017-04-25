@@ -377,7 +377,7 @@ export default class MioxKoaVue2xServerRender extends EventEmitter {
 
         // hot middleware
         this.app.use(ctk(hotMiddleWare(clientCompiler, {
-            path: this.options.prefix
+            path: this.options.prefix && (this.options.prefix !== '/')
                 ? `${this.options.prefix}/__webpack_hmr`
                 : '/__webpack_hmr'
         })));

@@ -41,7 +41,7 @@ export default function Client({ PATH_BUILD_PREFIX, PATH_ENTRY_FILE, options }) 
             }
         }));
     } else {
-        const pahter = options.prefix
+        const pahter = options.prefix && (options.prefix !== '/')
             ? `${options.prefix}/__webpack_hmr`
             : '/__webpack_hmr';
         config.entry.app.unshift('webpack-hot-middleware/client?path=' + pahter);

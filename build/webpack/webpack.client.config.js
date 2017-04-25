@@ -57,7 +57,7 @@ function Client(_ref) {
             }
         }));
     } else {
-        var pahter = options.prefix ? options.prefix + '/__webpack_hmr' : '/__webpack_hmr';
+        var pahter = options.prefix && options.prefix !== '/' ? options.prefix + '/__webpack_hmr' : '/__webpack_hmr';
         config.entry.app.unshift('webpack-hot-middleware/client?path=' + pahter);
     }
 

@@ -589,7 +589,7 @@ var MioxKoaVue2xServerRender = function (_EventEmitter) {
 
             // hot middleware
             this.app.use((0, _koaConnect2.default)((0, _webpackHotMiddleware2.default)(clientCompiler, {
-                path: this.options.prefix ? this.options.prefix + '/__webpack_hmr' : '/__webpack_hmr'
+                path: this.options.prefix && this.options.prefix !== '/' ? this.options.prefix + '/__webpack_hmr' : '/__webpack_hmr'
             })));
 
             // watch and update server renderer
