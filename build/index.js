@@ -158,6 +158,7 @@ var MioxKoaVue2xServerRender = function (_EventEmitter) {
          *  - bundle: <String> bundle名
          *  - cwd: <String>
          *  - hot <boolean> 是否启动热重载
+         *  - loaders <Array>
          */
 
     }]);
@@ -203,10 +204,21 @@ var MioxKoaVue2xServerRender = function (_EventEmitter) {
                 include: _this.INCLUDE_REGEXP
             }
         };
+
+        _this.inspectLoaders();
         return _this;
     }
 
     (0, _createClass3.default)(MioxKoaVue2xServerRender, [{
+        key: 'inspectLoaders',
+        value: function inspectLoaders() {
+            var loaders = this.options.loaders;
+            for (var i = 0; i < loaders.length; i++) {
+                var loader = loaders[i];
+                typeof this[loader] === 'function' && this.loader(this[loader]);
+            }
+        }
+    }, {
         key: 'loader',
         value: function loader() {
             for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {

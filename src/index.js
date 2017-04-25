@@ -53,6 +53,7 @@ export default class MioxKoaVue2xServerRender extends EventEmitter {
      *  - bundle: <String> bundle名
      *  - cwd: <String>
      *  - hot <boolean> 是否启动热重载
+     *  - loaders <Array>
      */
     constructor(options = {}) {
         super();
@@ -92,6 +93,16 @@ export default class MioxKoaVue2xServerRender extends EventEmitter {
                 use: { loader: 'babel-loader' },
                 include: this.INCLUDE_REGEXP
             }
+        }
+
+        this.inspectLoaders();
+    }
+
+    inspectLoaders() {
+        const loaders = this.options.loaders;
+        for (let i = 0; i < loaders.length; i++) {
+            const loader = loaders[i];
+            typeof this[loader] === 'function' && this.loader(this[loader]);
         }
     }
 
