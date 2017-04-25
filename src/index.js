@@ -21,6 +21,20 @@ import AutoPrefixer from 'autoprefixer';
 import unique from 'array-unique';
 
 export default class MioxKoaVue2xServerRender extends EventEmitter {
+    static render(options) {
+        const object = new MioxKoaVue2xServerRender(options);
+        return (app, files = ['css', 'less', 'sass', 'jsx']) => {
+            if (files && files.length) {
+                for (let i = 0 ; i < files.length; i++) {
+                    const file = files[i];
+                    if (object[file]) {
+                        object.loader(object[file]);
+                    }
+                }
+            }
+            object.connect(app);
+        }
+    }
     /**
      * 配置
      * @param app
@@ -40,11 +54,10 @@ export default class MioxKoaVue2xServerRender extends EventEmitter {
      *  - cwd: <String>
      *  - hot <boolean> 是否启动热重载
      */
-    constructor(app, options = {}) {
+    constructor(options = {}) {
         super();
         this.renderer = null;
         this.productionEnv = process.env.NODE_ENV === 'production';
-        this.app = app;
         this.options = options;
 
         if (!this.options.cwd) {
@@ -179,7 +192,8 @@ export default class MioxKoaVue2xServerRender extends EventEmitter {
         return ExtractTextPlugin.extract({ fallback: 'style-loader', use: uses });
     }
 
-    connect() {
+    connect(app) {
+        if (app) this.app = app;
         this.init();
 
         if (this.productionEnv) {

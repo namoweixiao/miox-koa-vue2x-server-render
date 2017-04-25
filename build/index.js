@@ -33,13 +33,13 @@ var _classCallCheck2 = require('babel-runtime/helpers/classCallCheck');
 
 var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
 
-var _createClass2 = require('babel-runtime/helpers/createClass');
-
-var _createClass3 = _interopRequireDefault(_createClass2);
-
 var _possibleConstructorReturn2 = require('babel-runtime/helpers/possibleConstructorReturn');
 
 var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+var _createClass2 = require('babel-runtime/helpers/createClass');
+
+var _createClass3 = _interopRequireDefault(_createClass2);
 
 var _inherits2 = require('babel-runtime/helpers/inherits');
 
@@ -122,35 +122,54 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  */
 var MioxKoaVue2xServerRender = function (_EventEmitter) {
     (0, _inherits3.default)(MioxKoaVue2xServerRender, _EventEmitter);
+    (0, _createClass3.default)(MioxKoaVue2xServerRender, null, [{
+        key: 'render',
+        value: function render(options) {
+            var object = new MioxKoaVue2xServerRender(options);
+            return function (app) {
+                var files = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : ['css', 'less', 'sass', 'jsx'];
 
-    /**
-     * 配置
-     * @param app
-     * @param options
-     *  - prefix: <Null|String> 前缀
-     *  - entry: <Object> 源码地址，基于process.cwd()的目录，前缀不带任何符号。
-     *      - dir: 目录地址
-     *      - filename: 文件名
-    *      - template: <String> 模板名
-     *  - build: <String> 编译后文件地址，基于process.cwd()的目录，前缀不带任何符号。
-     *  - lru: <Object> Lru-Cache 配置。
-     *  - static: <Object> 静态资源配置`koa-static-cache`
-     *  - clientCallback: <Function> 修改Client端配置
-     *  - serverCallback: <Function> 修改Server端配置
-     *  - externals: <Array> 排出掉的externals配置
-     *  - bundle: <String> bundle名
-     *  - cwd: <String>
-     *  - hot <boolean> 是否启动热重载
-     */
-    function MioxKoaVue2xServerRender(app) {
-        var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+                if (files && files.length) {
+                    for (var i = 0; i < files.length; i++) {
+                        var file = files[i];
+                        if (object[file]) {
+                            object.loader(object[file]);
+                        }
+                    }
+                }
+                object.connect(app);
+            };
+        }
+        /**
+         * 配置
+         * @param app
+         * @param options
+         *  - prefix: <Null|String> 前缀
+         *  - entry: <Object> 源码地址，基于process.cwd()的目录，前缀不带任何符号。
+         *      - dir: 目录地址
+         *      - filename: 文件名
+        *      - template: <String> 模板名
+         *  - build: <String> 编译后文件地址，基于process.cwd()的目录，前缀不带任何符号。
+         *  - lru: <Object> Lru-Cache 配置。
+         *  - static: <Object> 静态资源配置`koa-static-cache`
+         *  - clientCallback: <Function> 修改Client端配置
+         *  - serverCallback: <Function> 修改Server端配置
+         *  - externals: <Array> 排出掉的externals配置
+         *  - bundle: <String> bundle名
+         *  - cwd: <String>
+         *  - hot <boolean> 是否启动热重载
+         */
+
+    }]);
+
+    function MioxKoaVue2xServerRender() {
+        var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
         (0, _classCallCheck3.default)(this, MioxKoaVue2xServerRender);
 
         var _this = (0, _possibleConstructorReturn3.default)(this, (MioxKoaVue2xServerRender.__proto__ || (0, _getPrototypeOf2.default)(MioxKoaVue2xServerRender)).call(this));
 
         _this.renderer = null;
         _this.productionEnv = process.env.NODE_ENV === 'production';
-        _this.app = app;
         _this.options = options;
 
         if (!_this.options.cwd) {
@@ -294,7 +313,8 @@ var MioxKoaVue2xServerRender = function (_EventEmitter) {
         }
     }, {
         key: 'connect',
-        value: function connect() {
+        value: function connect(app) {
+            if (app) this.app = app;
             this.init();
 
             if (this.productionEnv) {
@@ -338,7 +358,7 @@ var MioxKoaVue2xServerRender = function (_EventEmitter) {
                     }, _callee, _this2);
                 }));
 
-                return function (_x2, _x3) {
+                return function (_x3, _x4) {
                     return _ref.apply(this, arguments);
                 };
             }());
@@ -404,7 +424,7 @@ var MioxKoaVue2xServerRender = function (_EventEmitter) {
                     }, _callee2, _this3);
                 }));
 
-                return function (_x4, _x5) {
+                return function (_x5, _x6) {
                     return _ref2.apply(this, arguments);
                 };
             }());
@@ -510,7 +530,7 @@ var MioxKoaVue2xServerRender = function (_EventEmitter) {
                     }, _callee3, _this5);
                 }));
 
-                return function (_x6, _x7) {
+                return function (_x7, _x8) {
                     return _ref3.apply(this, arguments);
                 };
             }());
