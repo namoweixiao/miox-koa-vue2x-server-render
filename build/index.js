@@ -212,10 +212,45 @@ var MioxKoaVue2xServerRender = function (_EventEmitter) {
     (0, _createClass3.default)(MioxKoaVue2xServerRender, [{
         key: 'inspectLoaders',
         value: function inspectLoaders() {
-            var loaders = this.options.loaders;
-            for (var i = 0; i < loaders.length; i++) {
-                var loader = loaders[i];
+            var _loaders = this.options.loaders;
+            for (var i = 0; i < _loaders.length; i++) {
+                var loader = _loaders[i];
                 typeof this[loader] === 'function' && this.loader(this[loader]);
+            }
+
+            this.clientConfig = (0, _webpackClient2.default)({
+                PATH_BUILD_PREFIX: this.PATH_BUILD_PREFIX,
+                PATH_ENTRY_FILE: this.PATH_ENTRY_FILE,
+                options: this.options
+            });
+            this.serverConfig = (0, _webpackServer2.default)({
+                PATH_BUILD_PREFIX: this.PATH_BUILD_PREFIX,
+                PATH_ENTRY_FILE: this.PATH_ENTRY_FILE,
+                options: this.options
+            });
+
+            var loaders = this.loaders;
+            for (var _loader2 in loaders) {
+                var _loaders$_loader = loaders[_loader2],
+                    vue = _loaders$_loader.vue,
+                    common = _loaders$_loader.common;
+
+                vue(this.rules.vue.options.loaders);
+                common(this.clientConfig.module.rules);
+                common(this.serverConfig.module.rules);
+            }
+
+            for (var rule in this.rules) {
+                this.clientConfig.module.rules.push(this.rules[rule]);
+                this.serverConfig.module.rules.push(this.rules[rule]);
+            }
+
+            if (typeof this.options.clientCallback === 'function') {
+                this.clientConfig = this.options.clientCallback(this.clientConfig);
+            }
+
+            if (typeof this.options.serverCallback === 'function') {
+                this.serverConfig = this.options.serverCallback(this.serverConfig);
             }
         }
     }, {
@@ -378,41 +413,6 @@ var MioxKoaVue2xServerRender = function (_EventEmitter) {
         key: 'init',
         value: function init() {
             var _this3 = this;
-
-            this.clientConfig = (0, _webpackClient2.default)({
-                PATH_BUILD_PREFIX: this.PATH_BUILD_PREFIX,
-                PATH_ENTRY_FILE: this.PATH_ENTRY_FILE,
-                options: this.options
-            });
-            this.serverConfig = (0, _webpackServer2.default)({
-                PATH_BUILD_PREFIX: this.PATH_BUILD_PREFIX,
-                PATH_ENTRY_FILE: this.PATH_ENTRY_FILE,
-                options: this.options
-            });
-
-            var loaders = this.loaders;
-            for (var loader in loaders) {
-                var _loaders$loader = loaders[loader],
-                    vue = _loaders$loader.vue,
-                    common = _loaders$loader.common;
-
-                vue(this.rules.vue.options.loaders);
-                common(this.clientConfig.module.rules);
-                common(this.serverConfig.module.rules);
-            }
-
-            for (var rule in this.rules) {
-                this.clientConfig.module.rules.push(this.rules[rule]);
-                this.serverConfig.module.rules.push(this.rules[rule]);
-            }
-
-            if (typeof this.options.clientCallback === 'function') {
-                this.clientConfig = this.options.clientCallback(this.clientConfig);
-            }
-
-            if (typeof this.options.serverCallback === 'function') {
-                this.serverConfig = this.options.serverCallback(this.serverConfig);
-            }
 
             this.app.use(function () {
                 var _ref2 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee2(ctx, next) {

@@ -99,10 +99,42 @@ export default class MioxKoaVue2xServerRender extends EventEmitter {
     }
 
     inspectLoaders() {
-        const loaders = this.options.loaders;
-        for (let i = 0; i < loaders.length; i++) {
-            const loader = loaders[i];
+        const _loaders = this.options.loaders;
+        for (let i = 0; i < _loaders.length; i++) {
+            const loader = _loaders[i];
             typeof this[loader] === 'function' && this.loader(this[loader]);
+        }
+
+        this.clientConfig = clientConfig({
+            PATH_BUILD_PREFIX: this.PATH_BUILD_PREFIX,
+            PATH_ENTRY_FILE: this.PATH_ENTRY_FILE,
+            options: this.options
+        });
+        this.serverConfig = serverConfig({
+            PATH_BUILD_PREFIX: this.PATH_BUILD_PREFIX,
+            PATH_ENTRY_FILE: this.PATH_ENTRY_FILE,
+            options: this.options
+        });
+
+        const loaders = this.loaders;
+        for (const loader in loaders) {
+            const { vue, common } = loaders[loader];
+            vue(this.rules.vue.options.loaders);
+            common(this.clientConfig.module.rules);
+            common(this.serverConfig.module.rules);
+        }
+
+        for (const rule in this.rules) {
+            this.clientConfig.module.rules.push(this.rules[rule]);
+            this.serverConfig.module.rules.push(this.rules[rule]);
+        }
+
+        if (typeof this.options.clientCallback === 'function') {
+            this.clientConfig = this.options.clientCallback(this.clientConfig);
+        }
+
+        if (typeof this.options.serverCallback === 'function') {
+            this.serverConfig = this.options.serverCallback(this.serverConfig);
         }
     }
 
@@ -227,38 +259,6 @@ export default class MioxKoaVue2xServerRender extends EventEmitter {
     }
 
     init() {
-        this.clientConfig = clientConfig({
-            PATH_BUILD_PREFIX: this.PATH_BUILD_PREFIX,
-            PATH_ENTRY_FILE: this.PATH_ENTRY_FILE,
-            options: this.options
-        });
-        this.serverConfig = serverConfig({
-            PATH_BUILD_PREFIX: this.PATH_BUILD_PREFIX,
-            PATH_ENTRY_FILE: this.PATH_ENTRY_FILE,
-            options: this.options
-        });
-
-        const loaders = this.loaders;
-        for (const loader in loaders) {
-            const { vue, common } = loaders[loader];
-            vue(this.rules.vue.options.loaders);
-            common(this.clientConfig.module.rules);
-            common(this.serverConfig.module.rules);
-        }
-
-        for (const rule in this.rules) {
-            this.clientConfig.module.rules.push(this.rules[rule]);
-            this.serverConfig.module.rules.push(this.rules[rule]);
-        }
-
-        if (typeof this.options.clientCallback === 'function') {
-            this.clientConfig = this.options.clientCallback(this.clientConfig);
-        }
-
-        if (typeof this.options.serverCallback === 'function') {
-            this.serverConfig = this.options.serverCallback(this.serverConfig);
-        }
-
         this.app.use(async (ctx, next) => {
             if (!this.productionEnv){
                 ctx.status = 200;
