@@ -38,6 +38,7 @@ export default class MioxKoaVue2xServerRender extends EventEmitter {
      *  - externals: <Array> 排出掉的externals配置
      *  - bundle: <String> bundle名
      *  - cwd: <String>
+     *  - hot <boolean> 是否启动热重载
      */
     constructor(app, options = {}) {
         super();
@@ -376,12 +377,13 @@ export default class MioxKoaVue2xServerRender extends EventEmitter {
         });
 
         // hot middleware
-        this.app.use(ctk(hotMiddleWare(clientCompiler, {
-            path: this.options.prefix && (this.options.prefix !== '/')
-                ? `${this.options.prefix}/__webpack_hmr`
-                : '/__webpack_hmr'
-        })));
-
+        if (this.options.hot) {
+            this.app.use(ctk(hotMiddleWare(clientCompiler, {
+                path: this.options.prefix && (this.options.prefix !== '/')
+                    ? `${this.options.prefix}/__webpack_hmr`
+                    : '/__webpack_hmr'
+            })));
+        }
 
         // watch and update server renderer
         const serverCompiler = webpack(this.serverConfig);

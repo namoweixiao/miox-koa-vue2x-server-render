@@ -140,6 +140,7 @@ var MioxKoaVue2xServerRender = function (_EventEmitter) {
      *  - externals: <Array> 排出掉的externals配置
      *  - bundle: <String> bundle名
      *  - cwd: <String>
+     *  - hot <boolean> 是否启动热重载
      */
     function MioxKoaVue2xServerRender(app) {
         var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
@@ -588,9 +589,11 @@ var MioxKoaVue2xServerRender = function (_EventEmitter) {
             });
 
             // hot middleware
-            this.app.use((0, _koaConnect2.default)((0, _webpackHotMiddleware2.default)(clientCompiler, {
-                path: this.options.prefix && this.options.prefix !== '/' ? this.options.prefix + '/__webpack_hmr' : '/__webpack_hmr'
-            })));
+            if (this.options.hot) {
+                this.app.use((0, _koaConnect2.default)((0, _webpackHotMiddleware2.default)(clientCompiler, {
+                    path: this.options.prefix && this.options.prefix !== '/' ? this.options.prefix + '/__webpack_hmr' : '/__webpack_hmr'
+                })));
+            }
 
             // watch and update server renderer
             var serverCompiler = (0, _webpack2.default)(this.serverConfig);
