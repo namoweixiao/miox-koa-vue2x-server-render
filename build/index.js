@@ -264,7 +264,7 @@ var MioxKoaVue2xServerRender = function (_EventEmitter) {
                 },
                 common: function common(options) {
                     options.push({
-                        test: /\.js$/,
+                        test: /\.jsx$/,
                         use: { loader: 'babel-loader' },
                         include: that.INCLUDE_REGEXP
                     });

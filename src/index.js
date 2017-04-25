@@ -149,7 +149,7 @@ export default class MioxKoaVue2xServerRender extends EventEmitter {
             },
             common(options) {
                 options.push({
-                    test: /\.js$/,
+                    test: /\.jsx$/,
                     use: { loader: 'babel-loader' },
                     include: that.INCLUDE_REGEXP
                 });
