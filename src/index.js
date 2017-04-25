@@ -23,17 +23,7 @@ import unique from 'array-unique';
 export default class MioxKoaVue2xServerRender extends EventEmitter {
     static render(options) {
         const object = new MioxKoaVue2xServerRender(options);
-        return (app, files = ['css', 'less', 'sass', 'jsx']) => {
-            if (files && files.length) {
-                for (let i = 0 ; i < files.length; i++) {
-                    const file = files[i];
-                    if (object[file]) {
-                        object.loader(object[file]);
-                    }
-                }
-            }
-            object.connect(app);
-        }
+        return app => object.connect(app);
     }
     /**
      * 配置

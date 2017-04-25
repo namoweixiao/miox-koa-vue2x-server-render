@@ -127,17 +127,7 @@ var MioxKoaVue2xServerRender = function (_EventEmitter) {
         value: function render(options) {
             var object = new MioxKoaVue2xServerRender(options);
             return function (app) {
-                var files = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : ['css', 'less', 'sass', 'jsx'];
-
-                if (files && files.length) {
-                    for (var i = 0; i < files.length; i++) {
-                        var file = files[i];
-                        if (object[file]) {
-                            object.loader(object[file]);
-                        }
-                    }
-                }
-                object.connect(app);
+                return object.connect(app);
             };
         }
         /**
@@ -404,7 +394,7 @@ var MioxKoaVue2xServerRender = function (_EventEmitter) {
                     }, _callee, _this2);
                 }));
 
-                return function (_x3, _x4) {
+                return function (_x2, _x3) {
                     return _ref.apply(this, arguments);
                 };
             }());
@@ -434,7 +424,7 @@ var MioxKoaVue2xServerRender = function (_EventEmitter) {
                     }, _callee2, _this3);
                 }));
 
-                return function (_x5, _x6) {
+                return function (_x4, _x5) {
                     return _ref2.apply(this, arguments);
                 };
             }());
@@ -540,7 +530,7 @@ var MioxKoaVue2xServerRender = function (_EventEmitter) {
                     }, _callee3, _this5);
                 }));
 
-                return function (_x7, _x8) {
+                return function (_x6, _x7) {
                     return _ref3.apply(this, arguments);
                 };
             }());
