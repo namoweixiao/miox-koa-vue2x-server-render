@@ -411,7 +411,7 @@ var MioxKoaVue2xServerRender = function (_EventEmitter) {
     }, {
         key: 'createRenderer',
         value: function createRenderer(bundle, template) {
-            template = template.replace('<!--vue-ssr-outlet-->', '<div class="mx-app"><div class="mx-webviews"><div class="mx-webview"><!--vue-ssr-outlet--></div></div></div>');
+            template = template.replace('<!--vue-ssr-outlet-->', '<div class="mx-app"><div class="mx-webviews"><div class="mx-webview active"><!--vue-ssr-outlet--></div></div></div>');
 
             return require('vue-server-renderer').createBundleRenderer(bundle, {
                 template: template,
