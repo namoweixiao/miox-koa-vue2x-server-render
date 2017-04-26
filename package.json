@@ -1,18 +1,18 @@
 {
   "name": "miox-koa-vue2x-server-render",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "description": "a middleware for koa which using vue2x in miox",
   "main": "build/index.js",
   "author": "evio <evio@vip.qq.com>",
   "license": "MIT",
   "scripts": {
     "git": "npm run build && git add . && git commit -am 'update' && git push",
-    "dev": "NODE_ENV=dev MIOX_ENV=server babel-node demo/index.js",
+    "dev": "NODE_ENV=dev babel-node demo/index.js",
     "start": "NODE_ENV=production babel-node demo/index.js",
     "build": "rm -rf build/ && babel src -d build",
     "build:service": "rimraf dist && npm run build:client && npm run build:server",
-    "build:client": "NODE_ENV=production MIOX_ENV=client webpack --config demo/build.client.js --progress --hide-modules",
-    "build:server": "NODE_ENV=production MIOX_ENV=server webpack --config demo/build.server.js --progress --hide-modules"
+    "build:client": "NODE_ENV=production webpack --config demo/build.client.js --progress --hide-modules",
+    "build:server": "NODE_ENV=production webpack --config demo/build.server.js --progress --hide-modules"
   },
   "files": [
     "src/",

@@ -29,7 +29,6 @@ export default function Server({ PATH_ENTRY_FILE, PATH_BUILD_PREFIX, options }) 
                 'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
                 'process.env.MIOX_ENV': '"server"'
             }),
-            new webpack.optimize.CommonsChunkPlugin({ name: 'vendor' }),
             new ExtractTextPlugin('style.[hash].css'),
             new VueSSRPlugin()
         ]

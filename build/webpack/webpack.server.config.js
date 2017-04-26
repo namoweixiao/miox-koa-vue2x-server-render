@@ -54,7 +54,7 @@ function Server(_ref) {
         plugins: [new _webpack2.default.DefinePlugin({
             'process.env.NODE_ENV': (0, _stringify2.default)(process.env.NODE_ENV || 'development'),
             'process.env.MIOX_ENV': '"server"'
-        }), new _webpack2.default.optimize.CommonsChunkPlugin({ name: 'vendor' }), new _extractTextWebpackPlugin2.default('style.[hash].css'), new _vueSsrWebpackPlugin2.default()]
+        }), new _extractTextWebpackPlugin2.default('style.[hash].css'), new _vueSsrWebpackPlugin2.default()]
     };
 }
 module.exports = exports['default'];
