@@ -9,9 +9,8 @@ import config from './config';
 const app = new Koa();
 const indexRoute = new Router();
 const pageRoute = new Router();
-const server = new ServerRender(pageRoute, config);
-server.loader(server.jsx, server.css, server.less, server.sass);
-server.connect();
+const server = new ServerRender(config);
+server.connect(pageRoute);
 pageRoute.get('/(.+)?', async (ctx, next) => await next());
 
 indexRoute.use('/web', pageRoute.routes(), pageRoute.allowedMethods());

@@ -107,19 +107,12 @@ var _extractTextWebpackPlugin = require('extract-text-webpack-plugin');
 
 var _extractTextWebpackPlugin2 = _interopRequireDefault(_extractTextWebpackPlugin);
 
-var _autoprefixer = require('autoprefixer');
-
-var _autoprefixer2 = _interopRequireDefault(_autoprefixer);
-
 var _arrayUnique = require('array-unique');
 
 var _arrayUnique2 = _interopRequireDefault(_arrayUnique);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-/**
- * Created by evio on 2017/3/22.
- */
 var MioxKoaVue2xServerRender = function (_EventEmitter) {
     (0, _inherits3.default)(MioxKoaVue2xServerRender, _EventEmitter);
     (0, _createClass3.default)(MioxKoaVue2xServerRender, null, [{
@@ -175,12 +168,6 @@ var MioxKoaVue2xServerRender = function (_EventEmitter) {
         _this.PATH_BUILD_PREFIX = _path2.default.resolve(options.cwd, options.build);
         _this.INCLUDE_REGEXP = (0, _source2.default)(options);
         _this.loaders = {};
-        _this.postcss = [(0, _autoprefixer2.default)({
-            browsers: ['last 20 versions']
-        })];
-        if (options.postcss) {
-            _this.postcss = options.postcss(_this.postcss);
-        }
         _this.rules = {
             "vue": {
                 test: /\.vue$/,
@@ -188,7 +175,6 @@ var MioxKoaVue2xServerRender = function (_EventEmitter) {
                 include: _this.INCLUDE_REGEXP,
                 options: {
                     preserveWhitespace: false,
-                    postcss: _this.postcss,
                     loaders: {}
                 }
             },
@@ -334,18 +320,10 @@ var MioxKoaVue2xServerRender = function (_EventEmitter) {
     }, {
         key: 'createLoader',
         value: function createLoader(type) {
-            var that = this;
             var uses = [{
                 loader: 'css-loader',
                 options: { minimize: true }
-            }, {
-                loader: 'postcss-loader',
-                options: {
-                    plugins: function plugins() {
-                        return that.postcss;
-                    }
-                }
-            }];
+            }, 'postcss-loader'];
 
             switch (type) {
                 case 'css':
@@ -651,7 +629,10 @@ var MioxKoaVue2xServerRender = function (_EventEmitter) {
         }
     }]);
     return MioxKoaVue2xServerRender;
-}(_events.EventEmitter);
+}(_events.EventEmitter); /**
+                          * Created by evio on 2017/3/22.
+                          */
+
 
 exports.default = MioxKoaVue2xServerRender;
 module.exports = exports['default'];

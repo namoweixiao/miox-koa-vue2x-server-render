@@ -17,7 +17,6 @@ import hotMiddleWare from 'webpack-hot-middleware';
 import { EventEmitter } from 'events';
 import source_modules from './webpack/source.modules';
 import ExtractTextPlugin from 'extract-text-webpack-plugin';
-import AutoPrefixer from 'autoprefixer';
 import unique from 'array-unique';
 
 export default class MioxKoaVue2xServerRender extends EventEmitter {
@@ -63,14 +62,6 @@ export default class MioxKoaVue2xServerRender extends EventEmitter {
         this.PATH_BUILD_PREFIX = path.resolve(options.cwd, options.build);
         this.INCLUDE_REGEXP = source_modules(options);
         this.loaders = {};
-        this.postcss = [
-            AutoPrefixer({
-                browsers: ['last 20 versions']
-            })
-        ];
-        if (options.postcss) {
-            this.postcss = options.postcss(this.postcss);
-        }
         this.rules = {
             "vue": {
                 test: /\.vue$/,
@@ -78,7 +69,6 @@ export default class MioxKoaVue2xServerRender extends EventEmitter {
                 include: this.INCLUDE_REGEXP,
                 options: {
                     preserveWhitespace: false,
-                    postcss: this.postcss,
                     loaders: {}
                 }
             },
@@ -208,20 +198,12 @@ export default class MioxKoaVue2xServerRender extends EventEmitter {
     }
 
     createLoader(type) {
-        const that = this;
         const uses = [
             {
                 loader: `css-loader`,
                 options: { minimize: true }
             },
-            {
-                loader: `postcss-loader`,
-                options: {
-                    plugins() {
-                        return that.postcss;
-                    }
-                }
-            }
+            'postcss-loader'
         ];
 
         switch (type) {

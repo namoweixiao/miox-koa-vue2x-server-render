@@ -7,5 +7,6 @@ module.exports = {
         filename: 'index.js'
     },
     build: 'dist',
-    prefix: '/web'
+    prefix: '/web',
+    loaders: ['css', 'less', 'sass', 'jsx']
 };

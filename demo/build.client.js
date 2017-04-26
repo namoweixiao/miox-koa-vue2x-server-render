@@ -3,5 +3,5 @@
  */
 const config = require('./config');
 const ServerRenderer = require('../build/index');
-const app = new ServerRenderer(null, config);
+const app = new ServerRenderer(config);
 module.exports = app.clientConfig;
