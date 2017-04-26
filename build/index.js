@@ -175,6 +175,12 @@ var MioxKoaVue2xServerRender = function (_EventEmitter) {
         _this.PATH_BUILD_PREFIX = _path2.default.resolve(options.cwd, options.build);
         _this.INCLUDE_REGEXP = (0, _source2.default)(options);
         _this.loaders = {};
+        _this.postcss = [(0, _autoprefixer2.default)({
+            browsers: ['last 20 versions']
+        })];
+        if (options.postcss) {
+            _this.postcss = options.postcss(_this.postcss);
+        }
         _this.rules = {
             "vue": {
                 test: /\.vue$/,
@@ -182,9 +188,7 @@ var MioxKoaVue2xServerRender = function (_EventEmitter) {
                 include: _this.INCLUDE_REGEXP,
                 options: {
                     preserveWhitespace: false,
-                    postcss: [(0, _autoprefixer2.default)({
-                        browsers: ['last 20 versions']
-                    })],
+                    postcss: _this.postcss,
                     loaders: {}
                 }
             },
@@ -330,9 +334,17 @@ var MioxKoaVue2xServerRender = function (_EventEmitter) {
     }, {
         key: 'createLoader',
         value: function createLoader(type) {
+            var that = this;
             var uses = [{
                 loader: 'css-loader',
                 options: { minimize: true }
+            }, {
+                loader: 'postcss-loader',
+                options: {
+                    plugins: function plugins() {
+                        return that.postcss;
+                    }
+                }
             }];
 
             switch (type) {
