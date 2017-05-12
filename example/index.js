@@ -7,6 +7,7 @@ import Store from './webstore/index';
 import Routes from './routes';
 import { Engine } from 'miox-vue2x';
 
+
 export default createServer(app => {
     app.set('engine', Engine);
     app.set('vuex', Store);

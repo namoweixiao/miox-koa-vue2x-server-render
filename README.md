@@ -1,4 +1,4 @@
-# Miox Server Render (koa-vuejs)
+# Miox Server Render (koa+vuejs@2x+ssr)
 
 它是一套miox服务端渲染的中间件集合。
 
@@ -14,53 +14,40 @@ npm install --save-dev miox-koa-vue2x-server-render
 # Run it
 
 ```javascript
-import Koa from 'koa';
-import ServerRenderer from 'miox-koa-vue2x-server-render';
+const ServerRender = require('miox-koa-vue2x-server-render');
+const config = require('./config');
+const base = require('./ssr');
+const server = new ServerRender(config);
 const app = new Koa();
-const service = new ServerRenderer(app, {
-    entry: {
-        dir: 'src',
-        filename: 'index.js'
-    },
-    buildPrefix: 'build',
-    lru: {
-        max: 1000,
-        maxAge: 1000 * 60 * 15
-    },
-    static: {
-        maxAge: 31536000,
-        gzip: true,
-        dynamic: true,
-        ...args
-    },
-    clientCallback(options) {
-        // ...
-    },
-    serverCallback(options) {
-        // ...
-    }
-});
-
-// 桥接程序
-service.connect();
-
-app.listen(3000);
+server.use(base);
+server.connect(app);
+app.listen(3000, () => console.log('start server at http://127.0.0.1:3000'));
 ```
 
 # 参数说明
 
-```javascript
-/**
- * 配置
- * @param app
- * @param options
- *  - entry: <Object> 源码地址，基于process.cwd()的目录，前缀不带任何符号。
- *      - dir: 目录地址
- *      - filename: 文件名
- *  - buildPrefix: <String> 编译后文件地址，基于process.cwd()的目录，前缀不带任何符号。
- *  - lru: <Object> Lru-Cache 配置。
- *  - static: <Object> 静态资源配置`koa-static-cache`
- *  - clientCallback: <Function> 修改Client端配置
- *  - serverCallback: <Function> 修改Server端配置
- */
-```
+**configs:**
+
+- `cwd` [String] 基址
+- `whitelist` [Array] 白名单列表。将使用源码编译的正则表达式写入。
+- `hot` [Boolean] 默认`false`。启动热更新。
+- `static` [Json] 静态资源缓存配置 { maxAge[Number:31536000], gzip[Boolean:false], dynamic[Boolean:true],... } # [https://www.npmjs.com/package/koa-static-cache](https://www.npmjs.com/package/koa-static-cache)
+- `cache` [Boolean] 是否使用缓存？默认`false`
+- `title` [String] 默认标题头
+- `app` [String] 入口文件绝对地址
+- `build` [String] 打包所在文件夹绝对地址
+- `prefix` [String] URL前缀
+
+# Events
+
+## Dev 
+
+1. `DEV:HMR:BEFORE`
+1. `DEV:SERVER:BEFORE`
+1. `DEV:SERVER:INJECT`
+1. `CREATE:SERVER:BEFORE`
+
+## Pro
+
+1. `PRO:STATIC:BEFORE`
+1. `CREATE:SERVER:BEFORE`

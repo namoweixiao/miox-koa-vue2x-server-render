@@ -8,7 +8,7 @@ import Home from './webviews/index/index.vue';
 const route = new Router();
 export default route;
 
-route.patch('/web', async ctx => {
+route.patch('/', async ctx => {
     store.commit('set_data', new Date().getTime());
     await ctx.render(Home);
 });

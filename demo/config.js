@@ -1,12 +1,11 @@
 /**
  * Created by evio on 2017/3/24.
  */
+const path = require('path');
 module.exports = {
-    entry: {
-        dir: 'example',
-        filename: 'index.js'
-    },
-    build: 'dist',
-    prefix: '/web',
-    loaders: ['css', 'less', 'sass', 'jsx']
+    app: path.resolve(__dirname, '../example/index.js'),
+    build: path.resolve(__dirname, '../dist'),
+    prefix: '/',
+    hot: true,
+    whitelist: [/\/example/]
 };

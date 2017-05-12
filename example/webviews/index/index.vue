@@ -1,7 +1,7 @@
 <template>
     <div>1111 <p>{{$store.state.me}}</p></div>
 </template>
-<style lang="less" src="./index.less"></style>
+<style src="./index.css"></style>
 <script>
     import { Component, Webview, life } from 'miox-vue2x';
     import store from '../../webstore/index';
