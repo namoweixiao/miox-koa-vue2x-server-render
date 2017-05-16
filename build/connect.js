@@ -172,15 +172,20 @@ var MioxKoaVue2xServerSideRenderer = function (_EventEmitter) {
     }, {
         key: 'createRenderer',
         value: function createRenderer(bundle, options) {
-            return (0, _vueServerRenderer.createBundleRenderer)(bundle, (0, _assign2.default)(options, {
+            var cache = this.options.base.cache;
+
+            var configs = {
                 template: this.template,
-                cache: (0, _lruCache2.default)({
-                    max: 1000,
-                    maxAge: 1000 * 60 * 15
-                }),
                 basedir: this.options.base.dir,
                 runInNewContext: false
-            }));
+            };
+            if (cache) {
+                configs.cache = (0, _lruCache2.default)({
+                    max: 1000,
+                    maxAge: 1000 * 60 * 15
+                });
+            }
+            return (0, _vueServerRenderer.createBundleRenderer)(bundle, (0, _assign2.default)(options, configs));
         }
     }, {
         key: 'production',

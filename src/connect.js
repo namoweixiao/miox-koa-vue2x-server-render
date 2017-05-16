@@ -71,15 +71,19 @@ export default class MioxKoaVue2xServerSideRenderer extends EventEmitter {
     }
 
     createRenderer(bundle, options) {
-        return createBundleRenderer(bundle, Object.assign(options, {
+        const { cache } = this.options.base;
+        const configs = {
             template: this.template,
-            cache: LRU({
-                max: 1000,
-                maxAge: 1000 * 60 * 15
-            }),
             basedir: this.options.base.dir,
             runInNewContext: false
-        }));
+        }
+        if (cache) {
+            configs.cache = LRU({
+                max: 1000,
+                maxAge: 1000 * 60 * 15
+            });
+        }
+        return createBundleRenderer(bundle, Object.assign(options, configs));
     }
 
     production() {
