@@ -73,10 +73,6 @@ var _lruCache = require('lru-cache');
 
 var _lruCache2 = _interopRequireDefault(_lruCache);
 
-var _koaConvert = require('koa-convert');
-
-var _koaConvert2 = _interopRequireDefault(_koaConvert);
-
 var _cahce = require('./cahce');
 
 var _cahce2 = _interopRequireDefault(_cahce);
@@ -107,6 +103,9 @@ var _vueServerRenderer = require('vue-server-renderer');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+/**
+ * Created by evio on 2017/5/11.
+ */
 var MioxKoaVue2xServerSideRenderer = function (_EventEmitter) {
     (0, _inherits3.default)(MioxKoaVue2xServerSideRenderer, _EventEmitter);
 
@@ -172,12 +171,14 @@ var MioxKoaVue2xServerSideRenderer = function (_EventEmitter) {
     }, {
         key: 'createRenderer',
         value: function createRenderer(bundle, options) {
-            var cache = this.options.base.cache;
+            var _options$base = this.options.base,
+                cache = _options$base.cache,
+                runInNewContext = _options$base.runInNewContext;
 
             var configs = {
                 template: this.template,
                 basedir: this.options.base.dir,
-                runInNewContext: false
+                runInNewContext: runInNewContext || true
             };
             if (cache) {
                 configs.cache = (0, _lruCache2.default)({
@@ -320,9 +321,9 @@ var MioxKoaVue2xServerSideRenderer = function (_EventEmitter) {
         value: function render(ctx, resolve, reject) {
             var _this4 = this;
 
-            var _options$base = this.options.base,
-                cache = _options$base.cache,
-                title = _options$base.title;
+            var _options$base2 = this.options.base,
+                cache = _options$base2.cache,
+                title = _options$base2.title;
 
             var url = ctx.request.url;
 
@@ -431,10 +432,7 @@ var MioxKoaVue2xServerSideRenderer = function (_EventEmitter) {
         }
     }]);
     return MioxKoaVue2xServerSideRenderer;
-}(_events.EventEmitter); /**
-                          * Created by evio on 2017/5/11.
-                          */
-
+}(_events.EventEmitter);
 
 exports.default = MioxKoaVue2xServerSideRenderer;
 module.exports = exports['default'];

@@ -7,7 +7,6 @@ import webpack from 'webpack';
 import ctk from 'koa-connect';
 import MFS from 'memory-fs';
 import LRU from 'lru-cache';
-import Convert from 'koa-convert';
 import staticCache from './cahce';
 import WebpackServerRenderer from './webpack/webpack.server';
 import WebpackClientRenderer from './webpack/webpack.client';
@@ -71,11 +70,11 @@ export default class MioxKoaVue2xServerSideRenderer extends EventEmitter {
     }
 
     createRenderer(bundle, options) {
-        const { cache } = this.options.base;
+        const { cache, runInNewContext } = this.options.base;
         const configs = {
             template: this.template,
             basedir: this.options.base.dir,
-            runInNewContext: false
+            runInNewContext: runInNewContext || true
         }
         if (cache) {
             configs.cache = LRU({
