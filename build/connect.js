@@ -355,7 +355,7 @@ var MioxKoaVue2xServerSideRenderer = function (_EventEmitter) {
             this.emit('CREATE:SERVER:BEFORE', this.context);
             this.context.use(function () {
                 var _ref3 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee2(ctx, next) {
-                    var body;
+                    var body, cache;
                     return _regenerator2.default.wrap(function _callee2$(_context2) {
                         while (1) {
                             switch (_context2.prev = _context2.next) {
@@ -375,36 +375,43 @@ var MioxKoaVue2xServerSideRenderer = function (_EventEmitter) {
 
                                 case 2:
                                     body = _context2.sent;
+                                    cache = _this5.options.base.cache;
+
+                                    if (!cache) {
+                                        ctx.set('Expires', 0);
+                                        ctx.set('Cache-Control', 'no-cache');
+                                        ctx.set('Pragma', 'no-cache');
+                                    }
 
                                     if (!(body instanceof Error)) {
-                                        _context2.next = 15;
+                                        _context2.next = 17;
                                         break;
                                     }
 
                                     if (!(body.code === 404)) {
-                                        _context2.next = 11;
+                                        _context2.next = 13;
                                         break;
                                     }
 
                                     ctx.status = 404;
-                                    _context2.next = 8;
+                                    _context2.next = 10;
                                     return next();
 
-                                case 8:
+                                case 10:
                                     return _context2.abrupt('return', _context2.sent);
 
-                                case 11:
+                                case 13:
                                     ctx.status = body.code || 500;
                                     ctx.body = body.message;
 
-                                case 13:
-                                    _context2.next = 16;
+                                case 15:
+                                    _context2.next = 18;
                                     break;
 
-                                case 15:
+                                case 17:
                                     ctx.body = body;
 
-                                case 16:
+                                case 18:
                                 case 'end':
                                     return _context2.stop();
                             }

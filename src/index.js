@@ -1,7 +1,7 @@
 /**
  * Created by evio on 2017/5/12.
  */
-// import './version';
+import './version';
 import Connection from './connect';
 import cache from './cahce';
 Connection.static = cache;

@@ -211,6 +211,13 @@ export default class MioxKoaVue2xServerSideRenderer extends EventEmitter {
                 }
             }).catch(e => Promise.resolve(e));
 
+            const { cache } = this.options.base;
+            if (!cache) {
+                ctx.set('Expires', 0);
+                ctx.set('Cache-Control', 'no-cache');
+                ctx.set('Pragma', 'no-cache');
+            }
+
             if (body instanceof Error) {
                 if (body.code === 404) {
                     ctx.status = 404;
