@@ -225,6 +225,8 @@ export default class MioxKoaVue2xServerSideRenderer extends EventEmitter {
                 if (body.code === 404) {
                     ctx.status = 404;
                     return await next();
+                } else if (body.code === 302 && body.url) {
+                    ctx.redirect(body.url);
                 } else {
                     ctx.status = body.code || 500;
                     ctx.body = body.message;

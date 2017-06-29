@@ -390,7 +390,7 @@ var MioxKoaVue2xServerSideRenderer = function (_EventEmitter) {
                                     }
 
                                     if (!(body instanceof Error)) {
-                                        _context2.next = 17;
+                                        _context2.next = 16;
                                         break;
                                     }
 
@@ -407,17 +407,21 @@ var MioxKoaVue2xServerSideRenderer = function (_EventEmitter) {
                                     return _context2.abrupt('return', _context2.sent);
 
                                 case 13:
-                                    ctx.status = body.code || 500;
-                                    ctx.body = body.message;
+                                    if (body.code === 302 && body.url) {
+                                        ctx.redirect(body.url);
+                                    } else {
+                                        ctx.status = body.code || 500;
+                                        ctx.body = body.message;
+                                    }
 
-                                case 15:
-                                    _context2.next = 18;
+                                case 14:
+                                    _context2.next = 17;
                                     break;
 
-                                case 17:
+                                case 16:
                                     ctx.body = body;
 
-                                case 18:
+                                case 17:
                                 case 'end':
                                     return _context2.stop();
                             }

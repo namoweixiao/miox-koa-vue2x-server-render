@@ -1,6 +1,6 @@
 {
   "name": "miox-koa-vue2x-server-render",
-  "version": "2.3.3",
+  "version": "2.3.4",
   "description": "a middleware for koa which using vue2x in miox",
   "main": "build/index.js",
   "author": "evio <evio@vip.qq.com>",
